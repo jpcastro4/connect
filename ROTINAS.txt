@@ -1,0 +1,23 @@
+Ver na tela principal
+
+--
+Link de indicação
+
+Reentradas feitas
+
+Saldo recebido
+
+Saldo doado
+
+Total de indicados
+
+Nível de participação
+
+--
+
+Lista de doações a receber
+Cronometro da doação
+
+
+- Tarefa cron passando de minuto em minuto pra ver doações cairam e removendo doadores
+
