@@ -36,7 +36,7 @@
         <div class="row">
 
           <div class="col-12 col-md-6 mx-auto">
-            <?php if($this->native_session->get_flashdata('nome_completo') ) echo '<p class="alert-info alert text-center w-100">Indicado por  '. $this->native_session->get('nome_completo'). '</p>';  ?>
+            <?php if($this->native_session->get_flashdata('nome_completo') ) echo '<p class="alert-info alert text-center w-100">Indicado por  '. $this->native_session->get_flashdata('nome_completo'). '</p>';  ?>
              
               <form id="register-form" action="cadastrar" class="form" method="post" >
                     <legend class="text-center py-4">Fazer cadastro</legend>

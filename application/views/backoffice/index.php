@@ -77,141 +77,115 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="row margin-top-10">
-                        
-
-                        <div class="col-lg-4">
+                    
+                    <div class="row">
+                        <div class="col-12 col-md-6">
                             <div class="card">
                                 <div class="card-block">
-                                    <h5 class="card-title">Pagamentos</h5>
+                                    <h5 class="card-title">Link de indicação</h5>
 
-                                    <div class="recent-products">
-                                        <ul>
-                                            <li>
-                                                <div class="product-image">
-                                                    <img src="assets/img/default-img.png" alt="">
-                                                </div>
-
-                                                <div class="product-info">
-                                                    <span class="product-title">
-                                                        <a href="#">Product Name</a>
-                                                        <span class="pull-right">
-                                                            <badge class="badge badge-primary">$1,800</badge>
-                                                            </span>
-                                                    </span>
-                                                    <span class="product-description">Product Description goes here.</span>
-                                                </div>
-                                            </li>
-
-                                            <li>
-                                                <div class="product-image">
-                                                    <img src="assets/img/default-img.png" alt="">
-                                                </div>
-
-                                                <div class="product-info">
-                                                    <span class="product-title">
-                                                        <a href="#">Product Name</a>
-                                                        <span class="pull-right">
-                                                            <badge class="badge badge-primary">$1,800</badge>
-                                                            </span>
-                                                    </span>
-                                                    <span class="product-description">Product Description goes here.</span>
-                                                </div>
-                                            </li>
-
-                                            <li>
-                                                <div class="product-image">
-                                                    <img src="assets/img/default-img.png" alt="">
-                                                </div>
-
-                                                <div class="product-info">
-                                                    <span class="product-title">
-                                                        <a href="#">Product Name</a>
-                                                        <span class="pull-right">
-                                                            <badge class="badge badge-primary">$1,800</badge>
-                                                            </span>
-                                                    </span>
-                                                    <span class="product-description">Product Description goes here.</span>
-                                                </div>
-                                            </li>
-
-                                            <li>
-                                                <div class="product-image">
-                                                    <img src="assets/img/default-img.png" alt="">
-                                                </div>
-
-                                                <div class="product-info">
-                                                    <span class="product-title">
-                                                        <a href="#">Product Name</a>
-                                                        <span class="pull-right">
-                                                            <badge class="badge badge-primary">$1,800</badge>
-                                                            </span>
-                                                    </span>
-                                                    <span class="product-description">Product Description goes here.</span>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                     <input readonly class="form-control" value="<?php echo base_url('cadastro/').$conta->usuarioLogin ?>" />
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-lg-8">
+                        <div class="col-12 col-md-3">
+                            <div class="card">
+                                <div class="card-block">
+                                    <h5 class="card-title">Comprar Posicionamento</h5>
+                                    <input readonly class="btn btn-warning btn-large text-center" type="button" value="Aguarde o lançamento" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <div class="card">
+                                <div class="card-block">
+                                    <h5 class="card-title">Avisos</h5>
+                                    <p>Dica: cada novo posicionamento te dá direito a mais 3 doações.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div> 
+
+                    <div class="row margin-top-10">
+                        
+                        <div class="col-12 col-md-6">
+                            <div class="card">
+                                <div class="card-block">
+                                    <h5 class="card-title">Pagamentos</h5>
+                                    <table class="table table-stripped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <td>#Cod</td>
+                                                <td>Recebedor</td>
+                                                <td>Status</td>
+                                                <td>Valor</td>
+                                                <td>Tempo</td>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody>
+                                        <?php if(!empty($doacoes)): ?>
+                                            <?php foreach($doacoes as $doacao): ?>
+                                            <tr>
+                                                <td><a href="#"><?php echo $receb->doacaoCod ?></a></td>
+                                                <td><?php echo $doacao->doadorNome ?></td>
+                                                <td>
+                                                    <badge class="badge badge-warning"><?php echo $doacao->doacaoStatusN ?></badge>
+                                                </td>
+                                                <td>
+                                                    $<?php echo $doacao->doacaoValor ?>
+                                                </td>
+                                                <td>
+                                                    $<?php echo $doacao->doacaoCronometro ?>
+                                                </td>
+                                            </tr>
+                                            <?php endforeach; ?>
+                                        <?php else : ?>
+                                             <td>Não há pagamentos</td> 
+                                        <?php endif; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
                             <div class="card">
                                 <div class="card-block">
                                     <h5 class="card-title">Recebimentos</h5>
                                     <table class="table table-stripped table-hover">
                                         <thead>
                                             <tr>
-                                                <td>#</td>
-                                                <td>Item</td>
+                                                <td>#Cod</td>
+                                                <td>Doador</td>
                                                 <td>Status</td>
-                                                <td>Price</td>
+                                                <td>Valor</td>
+                                                <td>Tempo</td>
                                             </tr>
                                         </thead>
 
                                         <tbody>
-                                            <tr>
-                                                <td><a href="#">190</a></td>
-                                                <td>Item Name</td>
-                                                <td>
-                                                    <badge class="badge badge-warning">Pending</badge>
-                                                </td>
-                                                <td>
-                                                    $525
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="#">190</a></td>
-                                                <td>Item Name</td>
-                                                <td>
-                                                    <badge class="badge badge-success">Completed</badge>
-                                                </td>
-                                                <td>
-                                                    $525
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="#">190</a></td>
-                                                <td>Item Name</td>
-                                                <td>
-                                                    <badge class="badge badge-primary">Shipped</badge>
-                                                </td>
-                                                <td>
-                                                    $525
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="#">190</a></td>
-                                                <td>Item Name</td>
-                                                <td>
-                                                    <badge class="badge badge-danger">Cancelled</badge>
-                                                </td>
-                                                <td>
-                                                    $525
-                                                </td>
-                                            </tr>
+                                        <?php if(!empty($recebimentos)): ?>
+                                        <?php foreach($recebimentos as $receb): ?>
+                                        <tr>
+                                            <td><a href="#"><?php echo $receb->doacaoCod ?></a></td>
+                                            <td><?php echo $receb->doadorNome ?></td>
+                                            <td>
+                                                <badge class="badge badge-warning"><?php echo $receb->doacaoStatusN ?></badge>
+                                            </td>
+                                            <td>
+                                                $<?php echo $receb->doacaoValor ?>
+                                            </td>
+                                            <td>
+                                                $<?php echo $receb->doacaoCronometro ?>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    <?php else : ?>
+                                        <td>Não há recebimentos</td> 
+                                    <?php endif; ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -220,7 +194,7 @@
                         
                     </div>
 
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-lg-4">
                             <div class="card">
                                 <div class="card-block">
@@ -279,7 +253,7 @@
                             </div>
                         </div>
                         
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <!-- /PAGE CONTENT -->

@@ -54,7 +54,7 @@ $route['404_override'] = '';
 // $route['translate_uri_dashes'] = FALSE;
 
 
-$route['cadastro(:any)'] = 'index/cadastro/$1';
+$route['cadastro/(:any)'] = 'index/cadastro/$1';
 $route['cadastro'] = 'index/cadastro';
 
 $route['politicas'] = 'index/politicas';

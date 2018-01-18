@@ -41,6 +41,19 @@ class Form extends CI_Controller {
         $this->backoffice->posiciona();
     }
 
+    public function perfil(){
+        $this->usuario->alteraPerfil();
+    }
+    
+    public function senha(){
+        $this->usuario->alteraSenha();
+    }
+
+    public function picpay(){
+
+        $this->usuario->picPay();
+    }
+
     //ADMINISTRATIVO 
 
     public function pacote($pacoteID=null){

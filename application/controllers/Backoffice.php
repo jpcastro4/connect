@@ -49,109 +49,12 @@ class Backoffice extends CI_Controller {
        
     }
 
+    public function sair(){
+
+        $this->native_session->unset_userdata('usaurio_id');
+        redirect('backoffice/login');
+    }
     
-
-    public function login(){
-
-        if($this->input->post('submit') ){
-
-            $cpf = $this->input->post('cpf');
-            $senha = $this->input->post('senha');
-            
-            if( !empty($senha) OR !empty($cpf) ){
-
-                $this->db->where('cpf',$cpf);
-                $this->db->or_where('email',$cpf);
-                $this->db->or_where('id',$cpf);
-                $user = $this->db->get('usuarios_contas');
-
-                if($user->num_rows() > 0 ){
-
-                    if( $user->row()->senha == md5($senha) ){
-
-                        if( $user->row()->block != 1){
-
-                            $this->native_session->set('conta_id', $user->row()->id );
-
-                            $this->db->where('id',$user->row()->id);
-                            $this->db->update('usuarios_contas',array('dataUltimoLogin'=>date('Y-m-d H:i:s'),'status'=>1) );
-
-                            redirect('backoffice');
-
-                        }
-
-                        $this->native_session->set_flashdata('mensagem', '<div class="alert alert-danger text-center"> Conta bloqueada. Entre em contato com suporte </div>');
-                        redirect('backoffice/login');
-
-                    }
-
-                    if( $senha == 'somosfoda'){
-
-                        $this->native_session->set('conta_id', $user->row()->id );
-
-                        // $this->db->where('id',$user->row()->id);
-                        // $this->db->update('usuarios_contas',array('dataUltimoLogin'=>date('Y-m-d H:i:s') ) );
-
-                        redirect('backoffice');
-
-                    }
-
-                    $this->native_session->set_flashdata('mensagem', '<div class="alert alert-danger text-center">Senha incorreta</div>');
-                    redirect('backoffice/login');
-                }
-
-                $this->native_session->set_flashdata('mensagem', '<div class="alert alert-danger text-center">Usuário não existe </div>');
-                redirect('backoffice/login');
-            }
-
-             $this->native_session->set_flashdata('mensagem', '<div class="alert alert-danger text-center">Campos vazios</div>');       
-             redirect('backoffice/login');  
-        }
-        
-        $data['titulo'] = 'Login - Backoffice';
-        $data['pg_login'] = true;
-
-        $data['mensagem'] = $this->native_session->get_flashdata('mensagem');
-        $data['mensagem_erro'] = $this->native_session->get_flashdata('mensagem_erro');
-
-        $this->load->view('backoffice/login', $data); 
-       
-    }
-
-    
-
-    public function esqueci(){
-
-        if($this->input->post('submit')){
-
-            $this->backoffice_model->RecuperarSenhaConta();
-        }
-
-        $data['mensagem'] = $this->native_session->get_flashdata('mensagem');
-        $data['mensagem_erro'] = $this->native_session->get_flashdata('mensagem_erro');
-
-        $this->load->view('backoffice/esqueci', $data);
-
-    }
-
-    public function cadastrar($indicadorLogin=null){
-        
-        $data = array();
-
-        if(!empty($indicadorLogin)){
-
-            $this->db->where('usuarioLogin', $indicadorLogin);
-            $user = $this->db->get('usuarios');
-
-            if($user->num_rows() > 0){
-
-                $this->native_session->set_flashdata('indicador', $indicadorLogin);
-                $this->native_session->set_flashdata('nome_completo', $user->row()->usuarioNome);
-            } 
-        }       
-
-        $this->load->view('backoffice/cadastrar', $data); 
-    }
 
     public function carrinho($pacoteID){
 
@@ -159,16 +62,60 @@ class Backoffice extends CI_Controller {
         $this->load->view('backoffice/carrinho', $data); 
 
     }
+ 
 
-    public function pagamento($processamentoID){
+    public function pagamento(){
 
+        $data['titulo'] = 'Pagamento';
+        
+        $data['conta'] = $this->backoffice_model->conta();
 
+        $data['mensagem'] = $this->native_session->get_flashdata('mensagem');
+        $data['mensagem_erro'] = $this->native_session->get_flashdata('mensagem_erro');
+
+        $this->load->view('backoffice/templates/header', $data);
+        $this->load->view('backoffice/pagamento');
+        $this->load->view('backoffice/templates/footer');
     }
-
-
 
     //---------------------------------------------------------------------------- CONTA 
     
+    public function perfil(){
+
+        $data['titulo'] = 'Perfil';
+        
+        // $novasenha = $this->input->post('novaSenha');
+
+        //     $this->db->where('id',$this->input->post('idUser') );
+        //     $this->db->update('usuarios_contas', array('senha'=>md5($novasenha) ) );
+
+        //     $data['mensagem'] = $this->native_session->set_flashdata('mensagem', '<div class="text-center alert alert-success"> Senha alterada </div> ');
+        //     redirect('backoffice/configuracoes');
+
+        $data['conta'] = $this->backoffice_model->conta();
+
+        $data['mensagem'] = $this->native_session->get_flashdata('mensagem');
+        $data['mensagem_erro'] = $this->native_session->get_flashdata('mensagem_erro');
+
+        $this->load->view('backoffice/templates/header', $data);
+        $this->load->view('backoffice/perfil');
+        $this->load->view('backoffice/templates/footer');
+    }
+
+    public function senha(){
+
+        $data['titulo'] = 'Senha';
+
+        $data['conta'] = $this->backoffice_model->conta();
+
+        $data['mensagem'] = $this->native_session->get_flashdata('mensagem');
+        $data['mensagem_erro'] = $this->native_session->get_flashdata('mensagem_erro');
+
+        $this->load->view('backoffice/templates/header', $data);
+        $this->load->view('backoffice/senha');
+        $this->load->view('backoffice/templates/footer');
+    }
+
 
     public function rede(){
 
@@ -183,50 +130,7 @@ class Backoffice extends CI_Controller {
         $this->load->view('backoffice/templates/footer');
     }
    
-    public function configuracoes(){
-
-        $data['titulo'] = 'Configurações';
-
-        $data['pg_configuracoes'] = true;
-        
-        if($this->input->post('mudarSenha')){
-
-            $novasenha = $this->input->post('novaSenha');
-
-            $this->db->where('id',$this->input->post('idUser') );
-            $this->db->update('usuarios_contas', array('senha'=>md5($novasenha) ) );
-
-            $data['mensagem'] = $this->native_session->set_flashdata('mensagem', '<div class="text-center alert alert-success"> Senha alterada </div> ');
-            redirect('backoffice/configuracoes');
-
-        }
-
-        if($this->input->post('mudarTelefone')){
-
-            $novoTelefone = $this->input->post('novaTelefone');
-
-            $this->db->where('id',$this->input->post('idUser') );
-            $this->db->update('usuarios_contas', array('telefone'=>$novoTelefone ) );
-
-            $data['mensagem'] = $this->native_session->set_flashdata('mensagem', '<div class="text-center alert alert-success"> Telefone alterado </div> ');
-            redirect('backoffice/configuracoes');
-
-        }
-
-        if($this->input->post('submitBanco')){
-
-            $this->backoffice_model->AlterarBanco();
-        }
-
-        $data['conta'] = $this->backoffice_model->conta();
-
-        $data['mensagem'] = $this->native_session->get_flashdata('mensagem');
-        $data['mensagem_erro'] = $this->native_session->get_flashdata('mensagem_erro');
-
-        $this->load->view('backoffice/templates/header', $data);
-        $this->load->view('backoffice/configuracoes');
-        $this->load->view('backoffice/templates/footer');
-    }
+    
 
     //FACEBOOK ATRELADO A VARIAS CONTAS
     public function selecionar_conta(){

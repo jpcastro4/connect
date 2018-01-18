@@ -15,56 +15,24 @@
     <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600,800" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
     
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous"> -->
     
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/core.css">
     <link rel="stylesheet" href="<?php echo base_url()?>assets/css/components.css">
     <link rel="stylesheet" href="<?php echo base_url()?>assets/icons/fontawesome/styles.min.css">
     <link rel="stylesheet" href="<?php echo base_url()?>assets/lib/css/chartist.min.css">
     
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    
+    
     <script src="https://code.jquery.com/jquery-3.1.1.min.js" ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-    <!-- 
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js" integrity="sha384-BLiI7JTZm+JWlgKa0M0kGRpJbF2J8q+qreVrKBC47e3K6BW78kGLrCkeRX6I9RoK" crossorigin="anonymous"></script>
-    -->
-    <!-- <script type="text/javascript" src="lib/js/jquery.min.js"></script>
-    <script type="text/javascript" src="lib/js/tether.min.js"></script>
-    <script type="text/javascript" src="lib/js/bootstrap.min.js"></script> -->
-
-    <!-- <script type="text/javascript" src="<?php echo base_url()?>assets/lib/js/chartist.min.js"></script> -->
+     
     <script type="text/javascript" src="<?php echo base_url()?>assets/js/app.min.js"></script>
-    <!-- <script type="text/javascript">
-        $(function() {
-            // Dashboard Sales Chart
-            // ------------------------------------------------------------------
-
-            var dataMain = {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                series: [
-                    [5, 4, 3, 7, 5, 10, 3, 4, 8, 10, 6, 8],
-                    [3, 2, 9, 5, 4, 6, 4, 6, 7, 8, 7, 4]
-                ]
-            };
-
-            var optionsMain = {
-                seriesBarDistance: 10
-            };
-
-            var responsiveOptionsMain = [
-                ['screen and (max-width: 640px)', {
-                    seriesBarDistance: 5,
-                    axisX: {
-                        labelInterpolationFnc: function (value) {
-                            return value[0];
-                        }
-                    }
-                }]
-            ];
-            var chart = new Chartist.Bar('.ct-chart-dashboard', dataMain, optionsMain, responsiveOptionsMain);
-        });
-    </script> -->
+    
+    <script> var site_url = '<?php echo base_url() ?>';</script>
 </head>
 
 <body>
@@ -140,7 +108,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle dropdown-has-after" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
-                        <img src="assets/img/default-user.jpg" alt="" class="user-img"> <?php echo $conta->usuarioNome; ?>
+                        <img src="<?php echo base_url() ?>assets/img/default-user.jpg" alt="" class="user-img"> <?php echo $conta->usuarioNome; ?>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                         <span class="dropdown-item">
@@ -178,90 +146,38 @@
                       </li>
 
                       <li>
-                          <a href="index.html"><i class="fa fa-home"></i> <span>Dashboard</span></a>
+                          <a href="<?php echo base_url('backoffice') ?>"><i class="fa fa-home"></i> <span>Dashboard</span></a>
                       </li>
 
-                      <li class="navigation-header">
-                          <span>Forms</span>
+                       
+
+                      <!-- <li>
+                          <a href="<?php echo base_url('backoffice/extrato') ?>"><i class="fa fa-home"></i> <span>Extrato</span></a>
+                      </li> -->
+
+                      <!-- <li class="navigation-header">
+                          <span>Relatorios</span>
                           <i class="icon-menu"></i>
-                      </li>
+                      </li> -->
 
                       <li>
-                          <a href="index.html"><i class="fa fa-pencil"></i> <span>Form Elements</span></a>
+                          <a href="index.html"><i class="fa fa-pencil"></i> <span>Relatorios</span></a>
                           <ul>
-                              <li><a href="inputs.html">Inputs</a></li>
-                              <li><a href="input_groups.html">Input Groups</a></li>
-                              <li><a href="layout_horizontal.html">Horizontal Layout</a></li>
-                              <li><a href="layout_vertical.html">Vertical Layout</a></li>
+                              <li><a href="<?php echo base_url('backoffice/doacoes') ?>">Doações Feitas</a></li>
+                              <li><a href="<?php echo base_url('backoffice/recebimentos') ?>">Doações Recebidas</a></li>
+                               <li><a href="<?php echo base_url('backoffice/extrato') ?>">Extrato Geral</a></li>
+                              <!--<li><a href="layout_vertical.html">Vertical Layout</a></li> -->
                           </ul>
                       </li>
 
                       <li>
-                          <a href="index.html"><i class="fa fa-th"></i> <span>Components</span></a>
+                          <a href="index.html"><i class="fa fa-th"></i> <span>Conta</span></a>
                           <ul>
-                              <li><a href="components_buttons.html">Buttons</a></li>
-                              <li><a href="components_dropdowns.html">Dropdown Menus</a></li>
-                              <li><a href="components_navs.html">Tabs, Accordions &amp; Navs</a></li>
-                              <li><a href="components_badges.html">Labels &amp; Badges</a></li>
-                              <li><a href="components_alerts.html">Alerts</a></li>
-                          </ul>
-                      </li>
-
-                      <li>
-                          <a href="index.html"><i class="fa fa-heart"></i> <span>Icons</span></a>
-                          <ul>
-                              <li><a href="icons_fontawesome.html">Font Awesome</a></li>
-                          </ul>
-                      </li>
-
-                      <li>
-                          <a href="index.html"><i class="fa fa-mouse-pointer"></i> <span>Pickers</span></a>
-                          <ul>
-                              <li><a href="pickers_date.html">Date Pickers</a></li>
-                              <li><a href="pickers_time.html">Time Pickers</a></li>
-                          </ul>
-                      </li>
-
-                      <li>
-                          <a href="index.html"><i class="fa fa-table"></i> <span>Tables</span></a>
-                          <ul>
-                              <li><a href="tables_basic.html">Basic Tables</a></li>
-                              <li><a href="tables_datatables.html">Data Tables</a></li>
-                          </ul>
-                      </li>
-
-                      <li>
-                          <a href="index.html"><i class="fa fa-area-chart"></i> <span>Charts</span></a>
-                          <ul>
-                              <li><a href="charts_chartist.html">Chartist.js</a></li>
-                          </ul>
-                      </li>
-
-                      <li>
-                          <a href="index.html"><i class="fa fa-magic"></i> <span>Appearence</span></a>
-                          <ul>
-                              <li><a href="appearence_panels.html">Content Panels</a></li>
-                              <li><a href="appearence_typography.html">Typography</a></li>
-                          </ul>
-                      </li>
-
-                      <li>
-                          <a href="index.html"><i class="fa fa-edit"></i> <span>Editors</span></a>
-                          <ul>
-                              <li><a href="editors_ck.html">CK Editor</a></li>
-                          </ul>
-                      </li>
-
-                      <li class="navigation-header">
-                          <span>Pages</span>
-                          <i class="icon-menu"></i>
-                      </li>
-
-                      <li>
-                          <a href="index.html"><i class="fa fa-file-o"></i> <span>Pages</span></a>
-                          <ul>
-                              <li><a href="pages_login.html">Login</a></li>
-                              <li><a href="pages_register.html">Register</a></li>
+                              <li><a href="<?php echo base_url('backoffice/pagamento') ?>">Pagamento</a></li>
+                              <li><a href="<?php echo base_url('backoffice/senha') ?>">Senha</a></li>
+                              <li><a href="<?php echo base_url('backoffice/perfil') ?>">Perfil</a></li>
+                              <!-- <li><a href="components_badges.html">Labels &amp; Badges</a></li>
+                              <li><a href="components_alerts.html">Alerts</a></li> -->
                           </ul>
                       </li>
                   </ul>
@@ -269,3 +185,4 @@
             </div>
 
             <!-- inject:/SIDEBAR -->
+

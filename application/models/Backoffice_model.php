@@ -24,88 +24,6 @@ class Backoffice_model extends CI_Model{
         return false;
     }
 
-    public function RecuperarSenhaConta(){
-
-        $cpf = $this->input->post('cpf');
-
-        if(empty($cpf)){
-
-            $this->native_session->set_flashdata('mensagem','<div class="alert alert-success text-center" data-dismiss="alert">O campo não pode ficar vazio.</div>');
-            redirect('backoffice/esqueci');
-        }
-
-        $this->db->where('cpf',$cpf);
-        $log = $this->db->get('log_senha');
-
-        if($log->num_rows() > 0 ){
-
-            $limite = $log->last_row()->log + 600;
-
-            if( strtotime('now') < $limite ){
-
-                $this->native_session->set_flashdata('mensagem','<div class="alert alert-success text-center" data-dismiss="alert">Você solicitou uma senha agora pouco. Aguarde um instante.</div>');
-                redirect('backoffice/esqueci');
-            }
-        }
-
-        $this->db->where('cpf', $cpf);
-        $user = $this->db->get('usuarios_contas');
-
-        if($user->num_rows() > 0){
-
-            $row = $user->row();
-
-            $s1 = rand(302, 999);
-            $s2 = 'Az';
-            $s3 = rand(10, 55);
-            $s4 = 'EmT';
-
-            $nova_senha = $s1.$s2.$s3.$s4;
-
-            $this->db->where('id', $row->id);
-            $this->db->update('usuarios_contas', array('senha'=>md5($nova_senha)));
-
-            $data['nome'] = $row->nome;
-            $data['senha'] = $nova_senha;
-
-            $config['protocol'] ='smtp';
-            $config['smtp_host'] = 'srv30.prodns.com.br';
-            $config['smtp_user'] = 'suporte@nowx.club';
-            $config['smtp_pass'] = 'now2016x';
-            $config['smtp_port'] = '465';
-            $config['smtp_crypto'] = 'ssl';
-            $config['mailtype'] = 'html';
-
-            $this->email->initialize($config);
-
-            $body = $this->load->view('email/senha',$data,TRUE);
-
-            $this->email->to( $row->email);
-            $this->email->from('suporte@nowx.club', 'BackOffice Now X');
-            $this->email->set_mailtype('html');
-            $this->email->subject('Nova senha da Conta - '.$row->cpf);
-            $this->email->message($body);
-
-            $envia = $this->email->send();
-
-            if($envia){
-
-                $this->db->insert('log_senha', array('cpf'=>$cpf, 'log'=>strtotime('now') ));
-
-                $this->native_session->set_flashdata('mensagem','<div class="alert alert-success text-center">Dentro de 2 minutos sua nova senha estará no seu email.</div>');
-                redirect('backoffice/esqueci');
-            }
-
-            $this->native_session->set_flashdata('mensagem','<div class="alert alert-danger text-center">Erro ao enviar nova senha. Tente novamente.</div>');
-            redirect('backoffice/esqueci');
-
-        }
-
-        $this->native_session->set_flashdata('mensagem','<div class="alert alert-danger text-center">O login informado não existe.</div>');
-        redirect('backoffice/esqueci');
-    }
-
-
     public function afiliadoUsers(){
 
         $this->db->where_in('idAfiliado', $this->native_session->get('afiliado_id') );
@@ -216,7 +134,7 @@ class Backoffice_model extends CI_Model{
         return false;
     }
 
-    public function contaBancos($recebedor = null){
+    public function bancos($recebedor = null){
 
         if($recebedor == null){
             $conta = $this->native_session->get('usuario_id');
@@ -225,7 +143,7 @@ class Backoffice_model extends CI_Model{
         }
         
 
-        $this->db->where_in('idContaUsuario', $conta);
+        $this->db->where_in('usuarioID', $conta);
         $usuarios = $this->db->get('usuarios_bancos');
 
         if( $usuarios->num_rows() > 0 ){
@@ -285,7 +203,7 @@ class Backoffice_model extends CI_Model{
 
     public function recebimentos(){
 
-        $this->db->where('idRecebedor', $this->native_session->get('user_id'));
+        $this->db->where('idRecebedor', $this->native_session->get('usuario_id'));
         $recebimentos = $this->db->get('doacoes');
 
         if( $recebimentos->num_rows() > 0){
@@ -298,7 +216,7 @@ class Backoffice_model extends CI_Model{
 
     public function doacoes(){
 
-        $this->db->where('idDoador', $this->native_session->get('user_id'));
+        $this->db->where('idDoador', $this->native_session->get('usuario_id'));
         $recebimentos = $this->db->get('doacoes');
 
         if( $recebimentos->num_rows() > 0){
@@ -324,54 +242,6 @@ class Backoffice_model extends CI_Model{
 
         return false;
     }
-
-
-
-
-
-
-
-
-
-
-    public function AlterarBanco(){
-
-        $user = $this->native_session->get('conta_id');
-
-        $fields = serialize( (object) $this->input->post() );
-
-        if( $this->input->post('id') ){
-            
-            $this->db->where(array('idContaUsuario'=>$user,'id'=> $this->input->post('id') ) );
-            $conta = $this->db->update('usuarios_bancos', array('banco'=>$fields) );
-            $this->native_session->set_flashdata('mensagem','<div class="alert alert-info text col-xs-12 text-center"> Banco alterado </div>');
-            redirect('backoffice/configuracoes');
-
-        }else{
-
-            $insert = $this->db->insert('usuarios_bancos', array('idContaUsuario'=>$user,'banco'=>$fields));
-
-            if($insert){
-                $this->native_session->set_flashdata('mensagem','<div class="alert alert-info text col-xs-12 text-center"> Banco inserido </div>');
-                redirect('backoffice/configuracoes');
-            }
-
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

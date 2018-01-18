@@ -1,3 +1,18 @@
+Tela de Cadastro  falta validação do numero de celular
+
+Tela de login ok
+
+Tela do Dashboard falta doações recebidas e pagamentos
+
+Tela de perfil ok
+Tela de picpay ok
+Tela de senha ok
+
+
+Tela de esqueci a senha falta
+
+
+
 Ver na tela principal
 
 --
@@ -28,8 +43,34 @@ Tarefa cron passando de minuto em minuto pra ver doa��es cairam e removendo 
 
 Rotina de compra de posicionamento
 
-ao clicar no botão o sistema
-cria um novo sub usuario vinculado a conta
-vai na fila e procura um sub usuario apto a receber 
-posiciona ele abaixo e abre um pedido de doação
+pega o id do solicitante e traz o perfil dele inteiro
+
+entra no rastreamento
+forma a fila e organiza as linhas de recebedores
+conta as linhas formadas
+
+verifica na ultima linha
+se existem vagas abertas
+-> se não
+    se existem doadores não concluidos
+    -> se sim 
+    pede para aguardar processamento da recebido
+
+- se sim 
+    libera a formação de uma nova linha
+
+    verifica se ele é repeat
+
+-> se não 
+verifica o nivel dele para definir quantos posicionamentos ele deve ocupar
+
+se o recebedor é repeat
+-> se sim
+verifica se ele nao tem downlines
+    -> se nao 
+    cria um novo sub usuario e encaixa com doação liberada
+
+-> se nao 
+cria um novo sub usuario e encaixa com doação aberta e cronometro
+
 

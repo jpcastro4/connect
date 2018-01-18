@@ -3,6 +3,8 @@ class Usuario_model extends CI_Model{
 
     public function __construct(){
         parent::__construct();
+
+        $this->load->model('backoffice_model', 'backoffice');
     }
 
     public function novaConta(){
@@ -249,54 +251,144 @@ class Usuario_model extends CI_Model{
 
     //     //retorna o pagamento da blockchain com o resultado e muda status do usuario e ativa o pacote comprado
     // }
-   
-    public function RecuperarSenha(){
+    
+    
+    public function usuarioLogin(){
 
-        //$this->load->library('email');
+        $login = $this->input->post('usuarioLogin');
+        $senha = $this->input->post('usuarioSenha');
+        
+        $this->db->where('usuarioSenha', md5($senha));
+        $this->db->where('usuarioEmail', $login);
+        $this->db->or_where('usuarioTelefone',$login);
+        $usuario = $this->db->get('usuarios');
 
-        $login = $this->input->post('login');
+        if($usuario->num_rows() > 0){
 
-        $this->db->where('login', $login);
-        $user = $this->db->get('usuarios');
+            $row = $usuario->row();
 
-        if($user->num_rows() > 0){
+            if($row->usuarioBlock == 0){
 
-            $row = $user->row();
+                $this->db->where('id',$row->usuarioID);
+                $this->db->update('usuarios',array('usuarioDataUltimoLogin'=>date('Y-m-d H:i:s') ) );
 
-            $s1 = rand(302, 999);
-            $s2 = 'Az-';
-            $s3 = rand(10, 55);
-            $s4 = 'Oyk';
+                $this->native_session->set('usuario_id',$row->usuarioID);
+                echo json_encode( array('result'=>'success','redirect'=> base_url('backoffice') ) );
+                return;              
 
-            $nova_senha = $s1.$s2.$s3.$s4;
-
-            $this->db->where('id', $row->id);
-            $this->db->update('usuarios', array('senha'=>md5($nova_senha)));
-
-            $data['nome'] = $row->nome;
-            $data['senha'] = $nova_senha;
-
-            $body = $this->load->view('email/senha',$data,TRUE);
-
-            $this->email->to( $row->email);
-            $this->email->from('suporte@redeads50.com', 'Painel Rede ADS50');
-            $this->email->set_mailtype('html');
-            $this->email->subject('Nova senha do Painel - '.$row->login);
-            $this->email->message($body);
-
-            $envia = $this->email->send();
-
-            if($envia){
-
-                return '<div class="alert alert-success text-center">Dentro de 5 minutos enviaremos uma nova senha.</div>';
             }
 
-            return '<div class="alert alert-danger text-center">Erro ao enviar nova senha. Tente novamente.</div>';
+            echo json_encode( array('result'=>'error','message'=> 'Você está bloqueado' ) );
+            return; 
 
         }
 
-        return '<div class="alert alert-danger text-center">O login informado não existe.</div>';
+        echo json_encode( array('result'=>'error','message'=> 'Verifique login ou senha' ) );
+        return;
     }
+    
+
+    public function alteraPerfil(){       
+        $user = $this->native_session->get('usuario_id');
+        $array = $this->input->post();
+
+        if( array_search(null , $array, false) === true  ){
+            echo json_encode(array('result'=>'error','message'=>'Todos os campos são obrigatórios.'));
+            return;
+        }
+
+        $array['usuarioTelefone'] = preg_replace("/\(|\)|\-/", "", $array['usuarioTelefone']); 
+        
+        $this->db->where('usuarioID',$user );
+        $this->db->update('usuarios', $array );
+
+        echo json_encode(array('result'=>'success','message'=>'Perfil alterado.'));
+        return;
+    }
+
+    public function alteraSenha(){
+        
+        if( array_search(null , $this->input->post() , false) === true  ){
+            echo json_encode(array('result'=>'error','message'=>'Todos os campos são obrigatórios.'));
+            return;
+        }
+
+        $novasenha = $this->input->post('usuarioSenha');
+        $repete = $this->input->post('repeteSenha');
+                
+        if($novasenha != $repete ){
+            echo json_encode(array('result'=>'error','message'=>'Senhas diferentes.','clear'=>'true') );
+            return;
+        }
+
+        $user = $this->native_session->get('usuario_id');
+
+        $this->db->where('usuarioID', $user );
+        $this->db->update('usuarios', array('usuarioSenha'=>md5($novasenha) ) );
+
+        echo json_encode(array('result'=>'success','message'=>'Senha alterada com sucesso.'));
+        return;
+    }
+
+    public function picPay(){
+
+        $user = $this->native_session->get('usuario_id');
+
+        if( array_search(null , $this->input->post() , false) === true  ){
+            echo json_encode(array('result'=>'error','message'=>'Todos os campos são obrigatórios.'));
+            return;
+        }
+
+        if(empty($this->input->post())){
+            echo json_encode(array('result'=>'error','message'=>'Erro. Tente novamente'));
+            return;
+        }
+
+        if($this->backoffice->conta()->usuarioSenha != md5($this->input->post('usuarioSenha')) ){
+            echo json_encode(array('result'=>'error','message'=>'Verifique sua senha'));
+            return;
+        }
+            
+        $this->db->where(array('usuarioID'=>$user ) );
+        $update = $this->db->update('usuarios', array('usuarioPicPay'=> $this->input->post('usuarioPicPay') ) );
+        if($update){
+            echo json_encode(array('result'=>'success','message'=>'PicPay alterado','redirect'=> base_url("backoffice/pagamento") ));
+            return;
+        }
+        echo json_encode(array('result'=>'error','message'=>'Tenta novamente','redirect'=> base_url("backoffice/pagamento") ));
+        return;
+    }
+    
+    public function alterarBanco(){
+
+        $user = $this->native_session->get('usuario_id');
+
+        if(empty($this->input->post())){
+            echo json_encode(array('result'=>'error','message'=>'Erro. Tente novamente'));
+            return;
+        }
+
+        $fields = serialize( (object) $this->input->post() );
+
+        if( $this->input->post('bancoID') ){
+            
+            $this->db->where(array('usuarioID'=>$user,'bancoID'=> $this->input->post('bancoID') ) );
+            $conta = $this->db->update('usuarios_bancos', array('banco'=>$fields) );
+            echo json_encode(array('result'=>'success','message'=>'Banco alterado'));
+            return;
+
+        }else{
+
+            $insert = $this->db->insert('usuarios_bancos', array('idContaUsuario'=>$user,'banco'=>$fields));
+
+            if($insert){
+                echo json_encode(array('result'=>'success','message'=>'Banco inserido'));
+                return;
+            }
+
+        }
+    }
+ 
 
     public function RecuperarSenhaConta(){
 
@@ -357,297 +449,7 @@ class Usuario_model extends CI_Model{
     }
 
 
-    public function usuarioLogin(){
+    
 
-        $login = $this->input->post('usuarioLogin');
-        $senha = $this->input->post('usuarioSenha');
-        
-        $this->db->where('usuarioSenha', md5($senha));
-        $this->db->where('usuarioEmail', $login);
-        $this->db->or_where('usuarioTelefone',$login);
-        $usuario = $this->db->get('usuarios');
-
-        if($usuario->num_rows() > 0){
-
-            $row = $usuario->row();
-
-            if($row->usuarioBlock == 0){
-
-                $this->native_session->set('usuario_id',$row->usuarioID);
-                echo json_encode( array('result'=>'success','redirect'=> base_url('backoffice') ) );
-                return;              
-
-            }
-
-            echo json_encode( array('result'=>'error','message'=> 'Você está bloqueado' ) );
-            return; 
-
-        }
-
-        echo json_encode( array('result'=>'error','message'=> 'Erro no login ou na senha' ) );
-        return;
-    }
-
-    // public function LogarConta(){
-
-    //     $login = $this->input->post('email');
-    //     $senha = $this->input->post('senha');
-
-    //     $this->db->where('email', $login);
-    //     $this->db->where('senha', md5($senha));
-
-    //     $usuario = $this->db->get('usuarios_contas');
-
-    //     if($usuario->num_rows() > 0){
-
-    //         $row = $usuario->row();
-
-    //         if($row->block == 0){
-
-    //             $this->db->where('id', $row->id);
-    //             $this->db->update('usuarios_contas', array('dataUltimoLogin'=>date('Y-m-d H:i:s') ));
-
-    //             if($row->id == 1 OR $row->id == 2){
-
-    //                 $this->native_session->set('superuser', 1);
-    //             }
-
-    //             $this->native_session->set('conta_id', $row->id);
-
-    //             redirect('painel');
-    //         }
-
-    //         $this->native_session->set_flashdata('mensagem', '<div class="alert alert-danger text-center">Sua conta foi bloqueada. Entre em contato com o suporte</div>');
-    //         return;
-
-    //     }
-
-    //     $this->native_session->set_flashdata('mensagem', '<div class="alert alert-danger text-center">E-mail ou senha inválidos.</div>');
-    // }
-
-    // public function LogarSwitchFacebook(){
-
-    //     $this->db->where('id',$this->input->post('conta_id'));
-    //     $usuario = $this->db->get('usuarios_contas');
-
-    //     if($usuario->num_rows() > 0 ){
-
-    //         $row = $usuario->row();
-
-    //         if($row->block == 0){
-
-    //             $this->db->where('id', $row->id);
-    //             $this->db->update('usuarios_contas', array('dataUltimoLogin'=>date('Y-m-d H:i:s') ));
-
-    //             if($row->id == 1 OR $row->id == 2){
-
-    //                 $this->native_session->set('superuser', 1);
-    //             }
-
-    //             $this->native_session->set('conta_id', $row->id);
-
-    //             redirect('painel/conta');
-    //         }
-
-    //         $this->native_session->set_flashdata('mensagem', '<div class="alert alert-danger text-center">Sua conta foi bloqueada. Entre em contato com o suporte</div>');
-    //         return;
-
-    //     }
-
-    //     $this->native_session->set_flashdata('mensagem', '<div class="alert alert-danger text-center">Conta inválida.</div>');
-    // }
-
-    public function AtualizarDados(){
-
-        $sessao = $this->native_session->get('user_id');
-
-        $nome = $this->input->post('nome');
-        $email = $this->input->post('email');
-        $cpf =  preg_replace("/\.|\-/", "", $this->input->post('cpf') ); 
-        $nascimento = $this->input->post('nascimento');
-        $celular = preg_replace("/\(|\)|\-/", "", $this->input->post('celular'));
-        $ddd = substr($celular, 0, 2);
-        $tel = substr($celular, 2, 10);
-
-        $array_usuarios_pessoal = array(
-            'nome'=>$nome,
-            'email'=>$email,
-            'cpf'=>$cpf,
-            'nascimento'=>converter_data($nascimento),
-            'ddd'=>$ddd,
-            'celular'=>$tel
-        );
-
-        $this->db->where('id', $sessao);
-        $atualiza = $this->db->update('usuarios',  $array_usuarios_pessoal);
-
-        if($atualiza){
-
-            return '<div class="alert alert-success text-center">Dados atualizados com sucesso!</div>';
-        }
-
-        return '<div class="alert alert-danger text-center">Erro ao atualizar dados.</div>';
-    }
-
-    public function AlterarSenha(){
-
-        $sessao = $this->native_session->get('user_id');
-
-        $senha_atual = $this->input->post('senha_atual');
-        $nova_senha = $this->input->post('nova_senha');
-        $confirmar_senha = $this->input->post('confirmar_senha');
-
-        $this->db->where('id', $sessao);
-        $this->db->where('senha', md5($senha_atual));
-        $user_senha = $this->db->get('usuarios');
-
-        if($user_senha->num_rows() > 0){
-
-            if($nova_senha == $confirmar_senha){
-
-                $array_senha = array(
-                    'senha'=>md5($nova_senha)
-                );
-
-                $this->db->where('id', $sessao);
-                $atualiza = $this->db->update('usuarios', $array_senha);
-
-                if($atualiza){
-
-                    $this->native_session->set_flashdata('mensagem','<div class="alert alert-success text-center">Senha atualizada com sucesso!</div>');
-                }
-
-                $this->native_session->set_flashdata('mensagem','<div class="alert alert-danger text-center">Erro ao atualizar senha.</div>');
-
-            }
-
-           $this->native_session->set_flashdata('mensagem','<div class="alert alert-danger text-center">Senhas digitadas não são compativeis uma com a outra.</div>');
-        }
-
-        $this->native_session->set_flashdata('mensagem','<div class="alert alert-danger text-center">Senha atual incorreta. Por favor, verifique.</div>');
-    }
-
-    public function AlterarSenhaConta(){
-
-        $sessao = $this->native_session->get('conta_id');
-
-        $senha_atual = $this->input->post('senha_atual');
-        $nova_senha = $this->input->post('nova_senha');
-        $confirmar_senha = $this->input->post('confirmar_senha');
-
-        $this->db->where('id', $sessao);
-        $this->db->where('senha', md5($senha_atual));
-        $user_senha = $this->db->get('usuarios_contas');
-
-        if($user_senha->num_rows() > 0){
-
-            if($nova_senha == $confirmar_senha){
-
-                $array_senha = array(
-                    'senha'=>md5($nova_senha)
-                );
-
-                $this->db->where('id', $sessao);
-                $atualiza = $this->db->update('usuarios_contas', $array_senha);
-
-                if($atualiza){
-
-                    $this->native_session->set_flashdata('mensagem','<div class="alert alert-success text-center">Senha atualizada com sucesso!</div>');
-                    redirect('painel/conta_configuracoes');
-                }
-
-                $this->native_session->set_flashdata('mensagem','<div class="alert alert-danger text-center">Erro ao atualizar senha.</div>');
-                redirect('painel/conta_configuracoes');
-            }
-
-            $this->native_session->set_flashdata('mensagem','<div class="alert alert-danger text-center">Senhas digitadas não são compativeis uma com a outra.</div>');
-            redirect('painel/conta_configuracoes');
-        }
-
-        $this->native_session->set_flashdata('mensagem','<div class="alert alert-danger text-center">Senha atual incorreta. Por favor, verifique.</div>');
-        redirect('painel/conta_configuracoes');
-    }
-
-    public function AlterarContaBancaria(){
-
-        $sessao = $this->native_session->get('user_id');
-
-        $banco = $this->input->post('banco');
-        $agencia = $this->input->post('agencia');
-        $conta = $this->input->post('conta');
-        $tipo_conta = $this->input->post('tipo_conta');
-        $titular = $this->input->post('titular');
-
-        $array_conta_bancaria = array(
-                                                                'banco'=>$banco,
-                                                                'agencia'=>$agencia,
-                                                                'conta'=>$conta,
-                                                                'tipo_conta'=>$tipo_conta,
-                                                                'titular'=>$titular
-                                                                );
-
-        $this->db->where('id', $sessao);
-        $atualiza = $this->db->update('usuarios', $array_conta_bancaria);
-
-        if($atualiza){
-
-            $this->native_session->set_flashdata('mensagem','<div class="alert alert-success text-center">Conta atualizada com sucesso</div>');
-
-            redirect('painel');
-        }
-
-        $this->native_session->set_flashdata('mensagem','<div class="alert alert-danger text-center">Erro ao atualizar sua conta</div>');
-
-        redirect('painel/perfil');
-    }
-
-    public function AlterarEndereco(){
-
-        $sessao = $this->native_session->get('user_id');
-
-        $rua = $this->input->post('rua');
-        $quadra = $this->input->post('quadra');
-        $lote = $this->input->post('lote');
-        $numero = $this->input->post('numero');
-        $complemento = $this->input->post('complemento');
-        $bairro = $this->input->post('bairro');
-        $cidade = $this->input->post('cidade');
-        $estado = $this->input->post('estado');
-        $cep = $this->input->post('cep');
-
-        $array_endereco = array(
-                    'rua'=>$rua,
-                    'quadra'=>$quadra,
-                    'lote'=>$lote,
-                    'numero'=>$numero,
-                    'complemento'=>$complemento,
-                    'bairro'=>$bairro,
-                    'cidade'=>$cidade,
-                    'estado'=>$estado,
-                    'cep'=>$cep,
-            );
-
-        $this->db->where('id_user', $sessao);
-        $enderecoUser = $this->db->get('loja_enderecos');
-         
-        if($enderecoUser->num_rows() > 0 ){
-            $this->db->where('id_user', $sessao);
-            $atualiza = $this->db->update('loja_enderecos', $array_endereco);
-
-            $erro = 'velho';
-            
-        }else{
-            $array_endereco['id_user'] = $sessao;
-            $atualiza = $this->db->insert('loja_enderecos', $array_endereco);
-
-            $erro = 'novo';
-        }           
-
-        if($atualiza){
-
-            return '<div class="alert alert-success text-center">Endereços salvo com sucesso!</div>';
-        }
-
-        return '<div class="alert alert-danger text-center">Erro ao atualizar endereço.</div>';
-    }
+  
 }

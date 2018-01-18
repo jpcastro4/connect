@@ -19,7 +19,8 @@ class Index extends CI_Controller {
     }
 
     public function cadastro($indicadorLogin=null){
-        
+        $this->native_session->unset_userdata('usuario_id'); 
+
         $data = array();
 
         if(!empty($indicadorLogin)){
@@ -38,9 +39,6 @@ class Index extends CI_Controller {
 
         $this->load->view('index/cadastrar', $data); 
     }
-
-    
-
 
     public function lista(){
         // $this->native_session->unset_userdata('user_id');
@@ -171,29 +169,14 @@ class Index extends CI_Controller {
     }
 
 
-    public function sair(){
+    public function esqueci(){
 
-        $this->native_session->unset_userdata('user_id');
-        $this->native_session->unset_userdata('superuser');
-        $this->native_session->unset_userdata('conta_id');
-        $this->native_session->unset_userdata('fb_access_token');
-        $this->native_session->unset_userdata('user_id_migracao');
-        redirect('backoffice/login');
+        $data['mensagem'] = $this->native_session->get_flashdata('mensagem');
+        $data['mensagem_erro'] = $this->native_session->get_flashdata('mensagem_erro');
+
+        $this->load->view('backoffice/esqueci', $data);
+
     }
-
-    // public function esqueci(){
-
-    //     $data = array();
-
-    //     if($this->input->post('submit')){
-
-    //         $this->usuario_model->RecuperarSenha();
-    //     }
-
-    //     $this->load->view('painel/esqueci', $data);
-
-    // }
-
 
     public function home(){
         $this->load->view('index/header');

@@ -95,16 +95,8 @@ $db['default'] = array(
 	'save_queries' => TRUE
 );
 
-//SEMPRE COLOCAR DEPOIS DA ARRAY
-if( $_SERVER['HTTP_HOST'] == 'localhost'){
-	
-	$db['default']['hostname'] = 'localhost';
-	$db['default']['username'] = 'root'; 
-	$db['default']['password'] = ''; 
-	$db['default']['database'] = 'connect';
-}else{
-	$db['default']['hostname'] = 'localhost';//'grupoelloinvestimentos.com.mysql';
-	$db['default']['username'] = 'nowx_user';//'grupoelloinvestimentos_com';'grupoellouser';
-	$db['default']['password'] = '*ENbon@g@5A_';//'997110';'RHw5nk9B9Tx?';
-	$db['default']['database'] = 'nowx_principal';
-}
+ 
+$db['default']['hostname'] = '192.185.176.213'; 
+$db['default']['username'] = 'difadmin_connect'; 
+$db['default']['password'] = 'Ze8$KsV-oD]B'; 
+$db['default']['database'] = 'difadmin_connect';

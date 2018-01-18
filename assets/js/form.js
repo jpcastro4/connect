@@ -24,19 +24,24 @@ var formsave = function(){
             var action = form.attr('action') ,campos = form.serialize()
 
             $.post(site_url+'form/'+action, campos , function(data){
-                
+                if(data.clear == 'true'){
+                    
+                    form.find('input,textarea').each(function(){
+                        $(this).val('')
+                    })
+                }
+
                 if(data.result == 'success'){
                     if(data.redirect){
-
+                        alert(data.message)
                         window.location.href = data.redirect
                     }else{
-
                         alert(data.message)
                     }
                 }
                 
                 if(data.result == 'error'){
-                    alert(data.message)
+                    alert('Erro: '+data.message)
                 }
             },'json')
             .fail(function(e){
