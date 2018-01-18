@@ -1,9 +1,7 @@
 Ver na tela principal
 
 --
-Link de indicação
-
-Reentradas feitas
+Link de indicaÃ§Ã£o
 
 Saldo recebido
 
@@ -11,13 +9,27 @@ Saldo doado
 
 Total de indicados
 
-Nível de participação
+NÃ­vel
+
 
 --
 
-Lista de doações a receber
-Cronometro da doação
+Lista de doaÃ§Ãµes a fazer com cronometro
+
+Lista de doacÃµea receber com cronometro
+ 
+--
+
+Tarefa cron passando de minuto em minuto pra ver doaï¿½ï¿½es cairam e removendo doadores
+
+--
 
 
-- Tarefa cron passando de minuto em minuto pra ver doações cairam e removendo doadores
+
+Rotina de compra de posicionamento
+
+ao clicar no botÃ£o o sistema
+cria um novo sub usuario vinculado a conta
+vai na fila e procura um sub usuario apto a receber 
+posiciona ele abaixo e abre um pedido de doaÃ§Ã£o
 

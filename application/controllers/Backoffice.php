@@ -6,6 +6,7 @@ class Backoffice extends CI_Controller {
         parent::__construct();
 
         $this->load->model('admin_model');
+        $this->load->model('backoffice_model');
 
     }
 

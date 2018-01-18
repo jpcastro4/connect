@@ -172,10 +172,10 @@ class Backoffice_model extends CI_Model{
    	
    	public function conta(){
 
-        $sessao = $this->native_session->get('conta_id');
+        $sessao = $this->native_session->get('usuario_id');
 
-        $this->db->where('id', $sessao);
-        $user = $this->db->get('usuarios_contas');
+        $this->db->where('usuarioID', $sessao);
+        $user = $this->db->get('usuarios');
 
         $row = $user->row();
 	
@@ -185,10 +185,10 @@ class Backoffice_model extends CI_Model{
 
     public function conta_coluna($coluna, $parametro = null){
 
-        $sessao = $this->native_session->get('conta_id');
+        $sessao = $this->native_session->get('usuario_id');
 
-        $this->db->where('id', $sessao);
-        $user = $this->db->get('usuarios_contas');
+        $this->db->where('usuarioID', $sessao);
+        $user = $this->db->get('usuarios');
 
         $row = $user->row();
 
@@ -203,10 +203,10 @@ class Backoffice_model extends CI_Model{
     }
 
     public function usuariosContas(){
-        $conta = $this->native_session->get('conta_id');
+        $conta = $this->native_session->get('usuario_id');
 
-        $this->db->where(array( 'conta_id'=> $conta,'tipagem'=>'P') );
-        $usuarios = $this->db->get('usuarios');
+        $this->db->where(array( 'subConta'=> $conta) );
+        $usuarios = $this->db->get('usuarios_sub');
 
         if( $usuarios->num_rows() > 0 ){
 
@@ -219,7 +219,7 @@ class Backoffice_model extends CI_Model{
     public function contaBancos($recebedor = null){
 
         if($recebedor == null){
-            $conta = $this->native_session->get('conta_id');
+            $conta = $this->native_session->get('usuario_id');
         }else{
             $conta = $recebedor;
         }

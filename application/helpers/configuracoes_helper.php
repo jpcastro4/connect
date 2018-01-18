@@ -32,7 +32,7 @@ function check_session(){
 
     $_this =& get_instance();
 
-    if(!$_this->native_session->get('conta_id')){
+    if(!$_this->native_session->get('usuario_id')){
 
         redirect('backoffice/login');
     }

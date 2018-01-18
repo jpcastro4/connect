@@ -4,158 +4,268 @@
   check_session();
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
+<html>
+
+<head>
+    <title>Backoffice - Connect Monney</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-Edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Backoffice - Now X Ajuda Mútua</title>
-    <meta name="description" content="A free HTML template and UI Kit built on Bootstrap" />
-    <meta name="keywords" content="free html template, bootstrap, ui kit, sass" />
-    <meta name="author" content="Peter Finlan and Taty Grassini Codrops" />
-    <link rel="apple-touch-icon" sizes="57x57" href="<?php echo base_url()?>assets/index/img/favicon/apple-touch-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="<?php echo base_url()?>assets/index/img/favicon/apple-touch-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="<?php echo base_url()?>assets/index/img/favicon/apple-touch-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="<?php echo base_url()?>assets/index/img/favicon/apple-touch-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="<?php echo base_url()?>assets/index/img/favicon/apple-touch-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="<?php echo base_url()?>assets/index/img/favicon/apple-touch-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="<?php echo base_url()?>assets/index/img/favicon/apple-touch-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="<?php echo base_url()?>assets/index/img/favicon/apple-touch-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="<?php echo base_url()?>assets/index/img/favicon/apple-touch-icon-180x180.png">
-    <link rel="icon" type="image/png" href="<?php echo base_url()?>assets/index/img/favicon/favicon-32x32.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="<?php echo base_url()?>assets/index/img/favicon/android-chrome-192x192.png" sizes="192x192">
-    <link rel="icon" type="image/png" href="<?php echo base_url()?>assets/index/img/favicon/favicon-96x96.png" sizes="96x96">
-    <link rel="icon" type="image/png" href="<?php echo base_url()?>assets/index/img/favicon/favicon-16x16.png" sizes="16x16">
-    <link rel="manifest" href="<?php echo base_url()?>assets/index/img/favicon/manifest.json">
-    <link rel="shortcut icon" href="<?php echo base_url()?>assets/index/img/favicon/favicon.ico">
-    <meta name="msapplication-TileColor" content="#663fb5">
-    <meta name="msapplication-TileImage" content="<?php echo base_url()?>assets/index/img/favicon/mstile-144x144.png">
-    <meta name="msapplication-config" content="<?php echo base_url()?>assets/index/img/favicon/browserconfig.xml">
-    <meta name="theme-color" content="#663fb5">
-    <!-- Only needed Bootstrap bits + custom CSS in one file -->
 
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600,800" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css" integrity="sha384-AysaV+vQoT3kOAXZkl02PThvDr8HYKPZhNT5h/CXfBThSRXQ6jW5DO2ekP5ViFdi" crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/core.css">
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/css/components.css">
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/icons/fontawesome/styles.min.css">
+    <link rel="stylesheet" href="<?php echo base_url()?>assets/lib/css/chartist.min.css">
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <!-- 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.5/js/bootstrap.min.js" integrity="sha384-BLiI7JTZm+JWlgKa0M0kGRpJbF2J8q+qreVrKBC47e3K6BW78kGLrCkeRX6I9RoK" crossorigin="anonymous"></script>
-    <script src="https://use.fontawesome.com/7cbf6b3d85.js"></script>
+    -->
+    <!-- <script type="text/javascript" src="lib/js/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/js/tether.min.js"></script>
+    <script type="text/javascript" src="lib/js/bootstrap.min.js"></script> -->
 
-    <link rel="stylesheet" href="<?php echo base_url() ?>assets/bo/assets/css/bootbox/sweet-alert.min.css" />
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/index/css/landio.css">
+    <!-- <script type="text/javascript" src="<?php echo base_url()?>assets/lib/js/chartist.min.js"></script> -->
+    <script type="text/javascript" src="<?php echo base_url()?>assets/js/app.min.js"></script>
+    <!-- <script type="text/javascript">
+        $(function() {
+            // Dashboard Sales Chart
+            // ------------------------------------------------------------------
 
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/index/css/bo.css">
-    <link rel="stylesheet" href="<?php echo base_url()?>assets/rede.css">
+            var dataMain = {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                series: [
+                    [5, 4, 3, 7, 5, 10, 3, 4, 8, 10, 6, 8],
+                    [3, 2, 9, 5, 4, 6, 4, 6, 7, 8, 7, 4]
+                ]
+            };
 
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <script>
-      (adsbygoogle = window.adsbygoogle || []).push({
-        google_ad_client: "ca-pub-3215674587886121",
-        enable_page_level_ads: true
-      });
-    </script>
+            var optionsMain = {
+                seriesBarDistance: 10
+            };
 
-  </head>
+            var responsiveOptionsMain = [
+                ['screen and (max-width: 640px)', {
+                    seriesBarDistance: 5,
+                    axisX: {
+                        labelInterpolationFnc: function (value) {
+                            return value[0];
+                        }
+                    }
+                }]
+            ];
+            var chart = new Chartist.Bar('.ct-chart-dashboard', dataMain, optionsMain, responsiveOptionsMain);
+        });
+    </script> -->
+</head>
 
-  <body class="bg-faded">
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-toggleable-md">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav">
+            <span>
+                <i class="fa fa-code-fork"></i>
+            </span>
+        </button>
 
-    <!-- DARK navigation
-    ================================================== -->
+        <button class="navbar-toggler navbar-toggler-left" type="button" id="toggle-sidebar">
+            <span>
+               <i class="fa fa-align-justify"></i>
+            </span>
+        </button>
 
-    <nav class="navbar navbar-dark bg-inverse">
-      <div class="container">
-        <a class="navbar-brand" href="<?php echo base_url()?>backoffice">
-          <img width="120" src="<?php echo base_url()?>assets/index/img/logo.png">
-          <span class="sr-only">Backoffice Now X</span>
+        <a class="navbar-brand logo hidden-md-up" href="#">
+            <img src="<?php echo base_url()?>assets/img/logo.png" alt="Modish">
         </a>
+        
 
-       <!--  <a class="navbar-toggler hidden-md-up pull-xs-right" data-toggle="collapse" href="#collapsingNavbarInverse" aria-expanded="false" aria-controls="collapsingNavbarInverse" style="background:none">
-        &#9776;
-        </a> -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <a class="navbar-brand logo hidden-md-down" href="#">
+              <img src="<?php echo base_url()?>assets/img/logo.png" alt="Modish">
+             </a>
 
-        <a class="navbar-toggler navbar-toggler-custom hidden-md-up pull-xs-right" data-toggle="collapse" href="#collapsingMobileUserInverse" aria-expanded="false" aria-controls="collapsingMobileUserInverse" style="background:none">
-        <span class="icon-user"></span>
-        </a>
+            <button class="sidebar-toggle btn btn-flat hidden-md-down" id="toggle-sidebar-desktop">
+                <span>
+                    <i class="fa fa-align-justify"></i>
+                </span>
+            </button>
+            <ul class="navbar-nav ml-auto">
+                <!-- <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle nav-icon" data-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-bell-o"></i>
+                        <span class="hidden-lg-up position-right">Notifications</span>
+                        <span class="badge bg-danger-4">8</span>
+                    </a>
 
-        <div id="collapsingNavbarInverse" class="collapse navbar-toggleable-custom" role="tabpanel" aria-labelledby="collapsingNavbarInverse">
-          <ul class="nav navbar-nav pull-xs-right">
-            <!--<li class="nav-item nav-item-toggable">
-              <a class="nav-link" href="<?php echo base_url()?>backoffice/configuracoes">Configurações</a>
-            </li>
-             <li class="nav-item nav-item-toggable">
-              <a class="nav-link" href="./index.html">Land.io</a>
-            </li>
-            <li class="nav-item nav-item-toggable">
-              <a class="nav-link" href="./index-carousel.html">Slides</a>
-            </li>
-            <li class="nav-item nav-item-toggable active">
-              <a class="nav-link" href="ui-elements.html">UI Kit <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item nav-item-toggable">
-              <a class="nav-link" href="https://github.com/tatygrassini/landio-html" target="_blank">GitHub</a>
-            </li>
-            <li class="nav-item nav-item-toggable hidden-sm-up">
-              <form class="navbar-form">
-                <input class="form-control navbar-search-input" type="text" placeholder="Type your search &amp; hit Enter&hellip;">
-              </form>
-            </li>
-            <li class="navbar-divider hidden-sm-down"></li>
-            <li class="nav-item dropdown nav-dropdown-search hidden-sm-down">
-              <a class="nav-link dropdown-toggle" id="dropdownMenuInverse1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="icon-search"></span>
-              </a>
-              <div class="dropdown-menu dropdown-menu-right dropdown-menu-search" aria-labelledby="dropdownMenuInverse1">
-                <form class="navbar-form">
-                  <input class="form-control navbar-search-input" type="text" placeholder="Type your search &amp; hit Enter&hellip;">
-                </form>
-              </div>
-            </li> -->
-
-            <li class="nav-item dropdown hidden-sm-down">
-              <a class="nav-link dropdown-toggle nav-dropdown-user" id="dropdownMenuInverse2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img src="<?php echo base_url()?>assets/default_avatar.png" height="40" width="40" alt="Avatar" class="img-circle"> <span class="icon-caret-down"></span>
-              </a>
-              <div class="dropdown-menu dropdown-menu-right dropdown-menu-user dropdown-menu-animated" aria-labelledby="dropdownMenuInverse2">
-                <div class="media">
-                  <div class="media-left">
-                    <img src="<?php echo base_url()?>assets/default_avatar.png" height="60" width="60" alt="Avatar" class="img-circle">
-                  </div>
-                  <div class="media-body media-middle">
-                    <h5 class="media-heading"><?php echo $conta->nome ?></h5>
-                    <h6><?php echo $conta->email ?></h6>
-                  </div>
-                </div>
-               <!--<a href="<?php echo base_url()?>backoffice/configuracoes" class="dropdown-item text-uppercase">View posts</a>
-                  <a href="#" class="dropdown-item text-uppercase">Manage groups</a>-->
-                <a href="<?php echo base_url()?>backoffice/configuracoes" class="dropdown-item text-uppercase"> Configurações </a> 
-                <a href="<?php echo base_url()?>sair" class="dropdown-item text-uppercase"> Sair </a>
-                <!-- <a href="#" class="btn-circle has-gradient pull-xs-right">
-                  <span class="sr-only">Edit</span>
-                  <span class="icon-edit"></span>
-                </a> -->
-              </div>
-            </li>
-
-          </ul>
+                    <div class="dropdown-menu dropdown-menu-right width-300 list-notifications">
+                        <ul class="list-unstyled">
+                            <li class="media notif-unread">
+                                You have 3 unread notifications!
+                            </li>
+                            <li class="media">
+                                <div class="notif-icon bg-primary-4">
+                                    <i class="fa fa-bell-o"></i>
+                                </div>
+                                <div class="media-body notif-text">
+                                    You may want to check this!
+                                </div>
+                            </li>
+                            <li class="media mr-2">
+                                <div class="notif-icon bg-danger-4">
+                                    <i class="fa fa-exclamation"></i>
+                                </div>
+                                <div class="media-body notif-text text-danger-4">
+                                    Server Banshee is not responding.
+                                </div>
+                            </li>
+                            <li class="media">
+                                <div class="notif-icon bg-success-4">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <div class="media-body notif-text text-success-4">
+                                    Backup completed successfully.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </li> -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle dropdown-has-after" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        <img src="assets/img/default-user.jpg" alt="" class="user-img"> <?php echo $conta->usuarioNome; ?>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                        <span class="dropdown-item">
+                          <input readonly class="form-control" value="ID: <?php echo $conta->usuarioLogin; ?>" />
+                        </span>
+                        <a class="dropdown-item" href="#">
+                            <i class="fa fa-user"></i> <span>Profile</span></a>
+                        </a>
+                        <a class="dropdown-item" href="#">
+                            <i class="fa fa-comment"></i> <span>Messages</span></a>
+                        </a>
+                        <a class="dropdown-item" href="#">
+                            <i class="fa fa-cog"></i> <span>Settings</span></a>
+                        </a>
+                        <a class="dropdown-item" href="#">
+                            <i class="fa fa-sign-out"></i> <span>Logout</span></a>
+                        </a>
+                    </div>
+                </li>
+            </ul>
         </div>
-
-        <div id="collapsingMobileUserInverse" class="collapse navbar-toggleable-custom dropdown-menu-custom p-x-1 hidden-md-up" role="tabpanel" aria-labelledby="collapsingMobileUserInverse">
-          <div class="media m-t-1">
-            <div class="media-left">
-              <img src="<?php echo base_url()?>assets/default_avatar.png" height="60" width="60" alt="Avatar" class="img-circle">
-            </div>
-            <div class="media-body media-middle">
-              <h5 class="media-heading"><?php echo $conta->nome ?></h5>
-              <h6><?php echo $conta->email ?></h6>
-            </div>
-          </div>
-         <!--  <a href="#" class="dropdown-item text-uppercase">View posts</a>
-          <a href="#" class="dropdown-item text-uppercase">Manage groups</a>-->
-          <a href="<?php echo base_url()?>backoffice/configuracoes" class="dropdown-item text-uppercase"> Configurações </a> 
-          <a href="<?php echo base_url()?>" class="dropdown-item text-uppercase"> Sair </a>
-          <!-- <a href="#" class="btn-circle has-gradient pull-xs-right m-b-1">
-            <span class="sr-only">Edit</span>
-            <span class="icon-edit"></span>
-          </a> -->
-        </div>
-      </div>
     </nav>
+    <!-- /NAVBAR -->
 
+        <div class="page-container">
+        <div class="page-content">
+            <!-- inject:SIDEBAR -->
+
+            <div id="sidebar-main" class="sidebar sidebar-default">
+              <div class="sidebar-content">
+                  <ul class="navigation">
+                      <li class="navigation-header">
+                          <span>Main</span>
+                          <i class="icon-menu"></i>
+                      </li>
+
+                      <li>
+                          <a href="index.html"><i class="fa fa-home"></i> <span>Dashboard</span></a>
+                      </li>
+
+                      <li class="navigation-header">
+                          <span>Forms</span>
+                          <i class="icon-menu"></i>
+                      </li>
+
+                      <li>
+                          <a href="index.html"><i class="fa fa-pencil"></i> <span>Form Elements</span></a>
+                          <ul>
+                              <li><a href="inputs.html">Inputs</a></li>
+                              <li><a href="input_groups.html">Input Groups</a></li>
+                              <li><a href="layout_horizontal.html">Horizontal Layout</a></li>
+                              <li><a href="layout_vertical.html">Vertical Layout</a></li>
+                          </ul>
+                      </li>
+
+                      <li>
+                          <a href="index.html"><i class="fa fa-th"></i> <span>Components</span></a>
+                          <ul>
+                              <li><a href="components_buttons.html">Buttons</a></li>
+                              <li><a href="components_dropdowns.html">Dropdown Menus</a></li>
+                              <li><a href="components_navs.html">Tabs, Accordions &amp; Navs</a></li>
+                              <li><a href="components_badges.html">Labels &amp; Badges</a></li>
+                              <li><a href="components_alerts.html">Alerts</a></li>
+                          </ul>
+                      </li>
+
+                      <li>
+                          <a href="index.html"><i class="fa fa-heart"></i> <span>Icons</span></a>
+                          <ul>
+                              <li><a href="icons_fontawesome.html">Font Awesome</a></li>
+                          </ul>
+                      </li>
+
+                      <li>
+                          <a href="index.html"><i class="fa fa-mouse-pointer"></i> <span>Pickers</span></a>
+                          <ul>
+                              <li><a href="pickers_date.html">Date Pickers</a></li>
+                              <li><a href="pickers_time.html">Time Pickers</a></li>
+                          </ul>
+                      </li>
+
+                      <li>
+                          <a href="index.html"><i class="fa fa-table"></i> <span>Tables</span></a>
+                          <ul>
+                              <li><a href="tables_basic.html">Basic Tables</a></li>
+                              <li><a href="tables_datatables.html">Data Tables</a></li>
+                          </ul>
+                      </li>
+
+                      <li>
+                          <a href="index.html"><i class="fa fa-area-chart"></i> <span>Charts</span></a>
+                          <ul>
+                              <li><a href="charts_chartist.html">Chartist.js</a></li>
+                          </ul>
+                      </li>
+
+                      <li>
+                          <a href="index.html"><i class="fa fa-magic"></i> <span>Appearence</span></a>
+                          <ul>
+                              <li><a href="appearence_panels.html">Content Panels</a></li>
+                              <li><a href="appearence_typography.html">Typography</a></li>
+                          </ul>
+                      </li>
+
+                      <li>
+                          <a href="index.html"><i class="fa fa-edit"></i> <span>Editors</span></a>
+                          <ul>
+                              <li><a href="editors_ck.html">CK Editor</a></li>
+                          </ul>
+                      </li>
+
+                      <li class="navigation-header">
+                          <span>Pages</span>
+                          <i class="icon-menu"></i>
+                      </li>
+
+                      <li>
+                          <a href="index.html"><i class="fa fa-file-o"></i> <span>Pages</span></a>
+                          <ul>
+                              <li><a href="pages_login.html">Login</a></li>
+                              <li><a href="pages_register.html">Register</a></li>
+                          </ul>
+                      </li>
+                  </ul>
+              </div>
+            </div>
+
+            <!-- inject:/SIDEBAR -->

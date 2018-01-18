@@ -24,6 +24,8 @@ class Index extends CI_Controller {
 
         if(!empty($indicadorLogin)){
 
+            $this->native_session->set('indicador',$indicadorLogin);
+
             $this->db->where('usuarioLogin', $indicadorLogin);
             $user = $this->db->get('usuarios');
 
