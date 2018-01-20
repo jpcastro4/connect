@@ -1,4 +1,6 @@
 <?php
+
+
 class Usuario_model extends CI_Model{
 
     public function __construct(){
@@ -7,145 +9,35 @@ class Usuario_model extends CI_Model{
         $this->load->model('backoffice_model', 'backoffice');
     }
 
-    public function novaConta(){
 
-        if( empty($this->input->post('usuarioSenha'))  OR empty($this->input->post('repeteSenha')) ){
-            echo json_encode( array('result'=>'error','message'=>'Campos vazios.') );
-            return;
-        }
-
-        if( $this->input->post('usuarioSenha')  != $this->input->post('repeteSenha') ){
-            echo json_encode( array('result'=>'error','message'=>'Senha não confere.') );
-            return;
-        }
-
-        if($this->native_session->get('indicador')){
-
-            $indicadorLogin = $this->native_session->get('indicador');
-        }else{
-
-            $indicadorLogin = 'connectmoney';
-        }
-        
-        $this->db->where('usuarioLogin', $indicadorLogin);
-        $indicador = $this->db->get('usuarios');
-
-        if($indicador->num_rows() > 0){
-
-            if( $indicador->row()->usuarioBlock == 1){
-           
-                //$this->native_session->set_flashdata('message_error', '<div class="alert alert-danger text-center">Seu indicador está bloqueado por irregularidades.</div>');
-                echo json_encode( array('result'=>'error','message'=>'Seu indicador está bloqueado.') );
-                return;
-            }
-
-            $indicadorID = $indicador->row()->usuarioID;
-        }else{
-
-            $indicadorID = null; //especificamente para o primeiro cadastro
-        }
-
-        $usuarioEmail = $this->input->post('usuarioEmail');
-        $usuarioSenha = $this->input->post('usuarioSenha');
-        $usuarioLogin = $this->input->post('usuarioLogin');
-
-        $usuarioNome = $this->input->post('usuarioNome');
-        $usuarioSobrenome = $this->input->post('usuarioSobrenome'); 
-        //$usuarioCpf =  preg_replace("/\.|\-/", "", $this->input->post('usuarioCpf') ); 
-
-        //$nascimento = $this->input->post('nascimento');
-        // $celular = preg_replace("/\(|\)|\-/", "", $this->input->post('celular'));
-        // $ddd = substr($celular, 0, 2);
-        // $tel = substr($celular, 2, 10);
-        
+    public function validaPhone(){
         $usuarioTelefone = preg_replace("/\(|\)|\-/", "", $this->input->post('usuarioTelefone'));
-        
-        //LOGIN JA EXISTENTE
-        // $this->db->where('usuarioLogin', $usuarioLogin);
-        // $user_usuarioLogin = $this->db->get('usuarios');
 
-        // if($user_usuarioLogin->num_rows() > 0){
-
-        //     //$this->native_session->set_flashdata('mensagem',  '<div class="alert alert-danger text-center">Login já existe. Escolha outro.</div>');
-        //     echo json_encode( array('result'=>'error','message'=>'NickName já existe. Escolha outro.') );
-        //     return;
-        // }
-
-        //USUARIOS QUE JA EXISTEM
-        //$this->db->where('usuarioCpf', $usuarioCpf);
-        $this->db->where('usuarioTelefone', $usuarioTelefone);
-        $this->db->or_where('usuarioEmail', $usuarioEmail);
-        $usuarioExiste = $this->db->get('usuarios');
-
-        if( $usuarioExiste->num_rows() > 0){
-
-            if( $usuarioExiste->row()->usuarioStatus == 0 ){
-
-                $array_cod = array( 'usuarioCod'=> (string) rand(1001,9999)  );
-                $this->db->where('usuarioID', $usuarioExiste->row()->usuarioID);
-                $cadastra = $this->db->update('usuarios', $array_cadastro);
-
-                echo json_encode( array('result'=>'success','redirect'=>'backoffice/valida/'.$usuarioGuid) );
-                return;
-            }
-
-            echo json_encode( array('result'=>'error','message'=>'Você já está cadastrado.') );
+        if( substr($usuarioTelefone,0,1) == 0 ){
+            $usuarioTelefone = substr($usuarioTelefone, 1);
+        }
+        if( strlen($usuarioTelefone) < 10   OR  strlen($usuarioTelefone) > 11  ){
+            echo json_encode( array('result'=>'error','message'=>'Número incorreto '. strlen($usuarioTelefone)) );
             return;
         }
 
-        $usuarioGuid = (string) uniqid();
-        $cod = (string) rand(1001,9999);
+        $code = (string) rand(1001,9999);
+        $this->native_session->set('code',$code);
+        $this->native_session->set('telefone',$usuarioTelefone);
+        $send = $this->codeCadastro($code,$usuarioTelefone);
+        echo json_encode($send);
+        return;
 
-        $array_cadastro = array(
-            'usuarioNome'=>$usuarioNome,
-            'usuarioCod'=>$cod,
-            'usuarioSobrenome'=>$usuarioSobrenome,
-            'usuarioEmail'=>$usuarioEmail,
-            //'usuarioCpf'=>$usuarioCpf,
-            //'nascimento'=>converter_data($nascimento),
-            //'ddd'=> $ddd,
-            'usuarioTelefone'=>$usuarioTelefone,
-            'usuarioLogin'=>$usuarioGuid,
-            'usuarioSenha'=>md5($usuarioSenha),
-            'usuarioBlock'=>0,
-            'usuarioStatus'=>0,
-            'usuarioDataCadastro'=>date('Y-m-d H:i:s'),
-            'usuarioIndicador'=>$indicadorID,
-        );
-
-        $cadastra = $this->db->insert('usuarios', $array_cadastro);
-
-        if($cadastra){
-
-            $id_novo_usuario = $this->db->insert_id();
-            //$this->native_session->set('usuario_id', $id_novo_usuario);
-
-        }else{
-
-            echo json_encode( array('result'=>'error','message'=>'Cadastrou falhou. Tente novamente') );
+        if($send){
+            echo json_encode( array('result'=>'success','redirect'=>base_url('valida')) );
             return;
         }
 
-
-        //REDIRECIONA PARA A TELA DE PAGAMENTO
-
-        if($this->codeCadastro($id_novo_usuario,$cod)){
-            
-            echo json_encode( array('result'=>'success','redirect'=>'backoffice/valida/'.$usuarioGuid) );
-            return;
-        }
-        //$pacoteID = $this->native_session->get('pacoteID');
-        // if($pagamento){
-        //     $infoCadastrado = $this->painel_model->infoUser($id_novo_usuario);
-        //     $nomeCadastrado = $infoCadastrado->nome;
-        //     $this->painel_model->InserirExtrato($id_indicador, 'indicou o amigo '.$nomeCadastrado.' #'.$id_novo_usuario , 'novoinidcado');
-
-        //     $this->native_session->set_flashdata('mensagem','<div class="alert alert-success text-center" >Usuário cadastrado com sucesso <a href="'. base_url('').'"><strong> Clique aqui e faça o login</strong></a></div>');            
-        // }
-        
+        echo json_encode( array('result'=>'error','message'=>'Envie novamente') );
+        return;
     }
 
-    public function codeCadastro($id_novo_usuario,$cod){
+    public function codeCadastro($cod,$phone){
 
          //envia mensagem para o celular com o codigo retornado pelo AWS SNS
 
@@ -176,11 +68,11 @@ class Usuario_model extends CI_Model{
         //     ];
 
         //     $result = $client->subscribe(array(
-        //         'TopicArn' => 'arn:aws:sns:XXXXX',
+        //         'TopicArn' => 'arn:aws:sns:us-east-1:630580470294:connectmoney',
         //         'Protocol' => 'sms',
-        //         'Endpoint' => 'XXXXXXXXXXX',
+        //         'Endpoint' => (string) '+55'.$phone,
         //     ));
-
+        
         //  $subarn = $result['SubscriptionArn'];
         //  $result = $client->publish($payload);
          
@@ -188,8 +80,201 @@ class Usuario_model extends CI_Model{
         //     'SubscriptionArn' => $subarn,
         //  ));
 
-         
-         return true;
+        $username = 'jp@grupodifference.com';
+        $hash = 'Your API hash';
+
+        // Prepare data for POST request
+        $data = array('username' => $username, 'hash' => $hash);
+
+        // Send the POST request with cURL
+        $ch = curl_init('http://api.txtlocal.com/get_templates/');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        // Process your response here
+        echo $response;
+    
+
+        return $response;
+        // $ch = curl_init('https://textbelt.com/text');
+        // $data = array(
+        //     'phone' => (string) '+55'.$phone,
+        //     'message' => (string) $cod,
+        //     'key' => '78c7949611b0b73210fa0031b2453b33fc7c38eaP8gamyNc3iOe5XZb1Xv2n0Xd1',
+        // );
+
+        // curl_setopt($ch, CURLOPT_POST, 1);
+        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+        // $response = curl_exec($ch);
+        
+        // curl_close($ch);
+                  
+        // return $response;
+    }
+
+    public function validaCode(){
+
+        if($this->input->post('usuarioCode') != $this->native_session->get('code') ){
+            echo json_encode(array('result'=>'error','message'=>'Código não confere'));
+            return;
+        }
+
+        echo json_encode(array('result'=>'success','message'=>'Sucesso. Vamos proseguir','redirect'=>base_url("finaliza")));
+    }
+
+
+
+    public function novaConta(){
+
+        $usuarioEmail = $this->input->post('usuarioEmail');
+        $usuarioSenha = $this->input->post('usuarioSenha');
+        //$usuarioLogin = $this->input->post('usuarioLogin');
+
+        $usuarioNome = $this->input->post('usuarioNome');
+        $usuarioSobrenome = $this->input->post('usuarioSobrenome'); 
+        //$usuarioCpf =  preg_replace("/\.|\-/", "", $this->input->post('usuarioCpf') ); 
+
+        //$nascimento = $this->input->post('nascimento');
+        // $celular = preg_replace("/\(|\)|\-/", "", $this->input->post('celular'));
+        // $ddd = substr($celular, 0, 2);
+        // $tel = substr($celular, 2, 10);
+        
+        $usuarioTelefone = $this->navite_session->get('telefone');      
+
+        if( empty($usuarioSenha)  OR empty($this->input->post('repeteSenha')) ){
+            echo json_encode( array('result'=>'error','message'=>'Campos vazios.') );
+            return;
+        }
+
+        if( $this->input->post('usuarioSenha')  != $this->input->post('repeteSenha') ){
+            echo json_encode( array('result'=>'error','message'=>'Senha não confere.') );
+            return;
+        }
+
+        if($this->native_session->get('indicador')){
+
+            $indicadorLogin = $this->native_session->get('indicador');
+        }else{
+
+            $indicadorLogin = 'connectmoney';
+        }
+        
+        $this->db->where('usuarioLogin', $indicadorLogin);
+        $indicador = $this->db->get('usuarios');
+
+        if($indicador->num_rows() > 0){
+
+            if( $indicador->row()->usuarioBlock == 1){
+           
+                //$this->native_session->set_flashdata('message_error', '<div class="alert alert-danger text-center">Seu indicador está bloqueado por irregularidades.</div>');
+                echo json_encode( array('result'=>'error','message'=>'Seu indicador está bloqueado.') );
+                return;
+            }
+
+            if( $indicador->row()->usuarioStatus == 0){
+           
+                //$this->native_session->set_flashdata('message_error', '<div class="alert alert-danger text-center">Seu indicador está bloqueado por irregularidades.</div>');
+                echo json_encode( array('result'=>'error','message'=>'Seu indicador não está ativo.') );
+                return;
+            }
+
+            $indicadorID = $indicador->row()->usuarioID;
+
+        }else{
+
+            $indicadorID = null; //especificamente para o primeiro cadastro
+        }
+
+        
+        
+        //LOGIN JA EXISTENTE
+        // $this->db->where('usuarioLogin', $usuarioLogin);
+        // $user_usuarioLogin = $this->db->get('usuarios');
+
+        // if($user_usuarioLogin->num_rows() > 0){
+
+        //     //$this->native_session->set_flashdata('mensagem',  '<div class="alert alert-danger text-center">Login já existe. Escolha outro.</div>');
+        //     echo json_encode( array('result'=>'error','message'=>'NickName já existe. Escolha outro.') );
+        //     return;
+        // }
+
+        //USUARIOS QUE JA EXISTEM
+        //$this->db->where('usuarioCpf', $usuarioCpf);
+        $this->db->where( array('usuarioTelefone'=> $usuarioTelefone,'usuarioSenha'=>md5($usuarioSenha) ));
+        $this->db->or_where('usuarioEmail', $usuarioEmail);
+        $indicadorDados = $this->db->get('usuarios');
+
+        if( $indicadorDados->num_rows() > 0){
+
+            if( $indicadorDados->row()->usuarioStatus == 0 ){
+
+                $array_cod = array( 'usuarioCod'=> (string) rand(1001,9999)  );
+                $this->db->where('usuarioID', $indicadorDados->row()->usuarioID);
+                $cadastra = $this->db->update('usuarios', $array_cadastro);
+
+                echo json_encode( array('result'=>'success','redirect'=>'backoffice/valida/'.$usuarioGuid) );
+                return;
+            }
+
+            echo json_encode( array('result'=>'error','message'=>'Você já está cadastrado') );
+            return;
+        }
+
+        $usuarioGuid = (string) uniqid();
+        
+        $array_cadastro = array(
+            'usuarioNome'=>$usuarioNome,
+            //'usuarioCod'=>$cod,
+            'usuarioSobrenome'=>$usuarioSobrenome,
+            'usuarioEmail'=>$usuarioEmail,
+            //'usuarioCpf'=>$usuarioCpf,
+            //'nascimento'=>converter_data($nascimento),
+            //'ddd'=> $ddd,
+            'usuarioTelefone'=>$usuarioTelefone,
+            'usuarioLogin'=>$usuarioGuid,
+            'usuarioSenha'=>md5($usuarioSenha),
+            'usuarioBlock'=>0,
+            'usuarioStatus'=>0,
+            'usuarioDataCadastro'=>date('Y-m-d H:i:s'),
+            'usuarioIndicador'=>$indicadorID,
+        );
+
+        $cadastra = $this->db->insert('usuarios', $array_cadastro);
+
+        if($cadastra){
+            $this->native_session->unser_userdata('telefone');
+            $id_novo_usuario = $this->db->insert_id();
+            //$this->native_session->set('usuario_id', $id_novo_usuario);
+
+        }else{
+
+            echo json_encode( array('result'=>'error','message'=>'Cadastrou falhou. Tente novamente') );
+            return;
+        }
+
+
+        //REDIRECIONA PARA A TELA DE PAGAMENTO
+
+        //if($this->codeCadastro($id_novo_usuario,$cod,$usuarioTelefone)){
+            
+        echo json_encode( array('result'=>'success','message'=>'Parabéns. Cadastro efetuado.','redirect'=>'backoffice/login') );
+        return;
+
+        //}
+        //$pacoteID = $this->native_session->get('pacoteID');
+        // if($pagamento){
+        //     $infoCadastrado = $this->painel_model->infoUser($id_novo_usuario);
+        //     $nomeCadastrado = $infoCadastrado->nome;
+        //     $this->painel_model->InserirExtrato($id_indicador, 'indicou o amigo '.$nomeCadastrado.' #'.$id_novo_usuario , 'novoinidcado');
+
+        //     $this->native_session->set_flashdata('mensagem','<div class="alert alert-success text-center" >Usuário cadastrado com sucesso <a href="'. base_url('').'"><strong> Clique aqui e faça o login</strong></a></div>');            
+        // }
+        
     }
 
 

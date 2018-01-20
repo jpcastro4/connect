@@ -5,22 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE-Edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Cadastro Connect Money <?php if(!empty($indicador) ) echo ' - Indicado por '. $indicador;  ?></title>
+    <title>Valida codigo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="<?php if($this->native_session->get_flashdata('nome_completo') ) echo 'Faça como '. $this->native_session->get('nome_completo');  ?> Cadastre-se e participe da Connect Money. A melhor comunidade de ajuda mútua.">
-    <meta name="author" content="Connect Money">
- 
-    <meta property="og:locale" content="pt_BR">
-    <meta property="og:url" content="<?php echo base_url().$this->uri->uri_string() ?>">
-    <meta property="og:title" content="Cadastro Connect Money<?php if(!empty($indicador) ) echo ' - Indicado por '. $indicador;  ?>">
-    <meta property="og:site_name" content="Connect Money">
-    <meta property="og:description" content="<?php if($this->native_session->get_flashdata('nome_completo') ) echo "Faça como ". $this->native_session->get('nome_completo');  ?> Cadastre-se e participe da Connect Money. A melhor comunidade de ajuda mútua.">
-    <meta property="og:image" content="<?php echo base_url('assets/img/connect-money.jpeg')  ?>">
-    <meta property="og:image:type" content="image/jpeg">
-    <meta property="og:image:width" content="800">  
-    <meta property="og:image:height" content="800"> 
-    <meta property="og:type" content="website">
-
+     
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
      
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" ></script>
@@ -48,25 +35,29 @@
 
   <div class="container">
         <div class="row">
-
-          <div class="col-12 col-md-6 mx-auto">
-            <?php if(!empty($indicador) ) echo '<p class="alert-info alert text-center w-100">Indicado por  '. $indicador. '  -  '.$this->native_session->get('indicador').'</p>';  ?>
-             
-              <form id="register-form" action="cadastrar" class="form" method="post" >
-                    <legend class="text-center py-4">Fazer cadastro</legend>
-                
-                    <div class="form-group">
-                      <label for="fone" class="form-control-label">Telefone (DDD + Seu número)</label>
-                      <input name="usuarioTelefone" class="form-control" type="number" required >
+            <div class="col-12 col-6">
+                <div class="row">
+                    <div class="col-12 col-md-6 mx-auto">
+                        <p<i>Precisamos validar seu numero de whatsapp. Você receberá um codigo via SMS. Insira no campo ao lado para concluir o cadastro</i></p>
                     </div>
+                    <div class="col-12 col-md-6 mx-auto">
+                                         
+                    <form id="register-form" action="cadastrar" class="form" method="post" >
+                            <legend class="text-center py-4">Fazer cadastro</legend>
+                        
+                            <div class="form-group">
+                            <label for="fone" class="form-control-label">Código</label>
+                            <input name="usuarioCod" class="form-control" type="number" required >
+                            </div>
 
-                    <div class="form-group py-4">
-                    <button type="submit" class="btn btn-big btn-success">Evniar</button>
+                            <div class="form-group py-4">
+                            <button type="submit" class="btn btn-big btn-success">Enviar</button>
+                            </div>
+                        </form>
+                    
                     </div>
-                </form>
-             
-          </div>
-
+                </div>
+            </div>
         </div>
     </div>
 

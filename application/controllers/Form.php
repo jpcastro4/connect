@@ -23,7 +23,11 @@ class Form extends CI_Controller {
     //USUARIO
     public function cadastrar(){
 
-        $this->usuario->novaConta();
+        $this->usuario->validaPhone();
+    }
+
+    public function valida(){
+        $this->usuario->validaCode();
     }
 
     public function login(){

@@ -5,10 +5,24 @@
 <html>
 
 <head>
-    <title>Modish - Open Source Admin Dashboard Template</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE-Edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>Login - Connect Money</title>
+    <meta name="description" content="Acesso ao backoffice Connect Money onde você pode administrar suas finanças.">
+    <meta name="author" content="Connect Money">
+ 
+    <meta property="og:locale" content="pt_BR">
+    <meta property="og:url" content="<?php echo base_url().$this->uri->uri_string() ?>">
+    <meta property="og:title" content="Connect Money">
+    <meta property="og:site_name" content="Connect Money">
+    <meta property="og:description" content="Acesso ao backoffice Connect Money onde você pode administrar suas finanças.">
+    <meta property="og:image" content="<?php echo base_url('assets/img/connect-money.jpeg')  ?>">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="800">  
+    <meta property="og:image:height" content="800"> 
+    <meta property="og:type" content="website">
 
     <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600,800" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">

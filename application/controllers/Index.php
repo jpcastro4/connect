@@ -32,10 +32,28 @@ class Index extends CI_Controller {
 
             if($user->num_rows() > 0){
 
-                $this->native_session->set_flashdata('indicador', $indicadorLogin);
-                $this->native_session->set_flashdata('nome_completo', $user->row()->usuarioNome);
+                $data['indicador'] =  $user->row()->usuarioNome;
             } 
         }       
+
+        $this->load->view('index/cadastrar', $data); 
+    }
+
+    public function valida(){  
+
+        $this->load->view('index/cadastrar', $data); 
+    }
+
+    public function finaliza(){
+        $indicadorLogin = $this->native_session->get('indicador');
+
+        $this->db->where('usuarioLogin', $indicadorLogin);
+        $user = $this->db->get('usuarios');
+
+        if($user->num_rows() > 0){
+
+            $data['indicador'] =  $user->row()->usuarioNome;
+        }        
 
         $this->load->view('index/cadastrar', $data); 
     }

@@ -52,16 +52,43 @@
           <div class="col-12 col-md-6 mx-auto">
             <?php if(!empty($indicador) ) echo '<p class="alert-info alert text-center w-100">Indicado por  '. $indicador. '  -  '.$this->native_session->get('indicador').'</p>';  ?>
              
-              <form id="register-form" action="cadastrar" class="form" method="post" >
+              <form id="register-form" action="finalizar" class="form" method="post" >
                     <legend class="text-center py-4">Fazer cadastro</legend>
                 
                     <div class="form-group">
-                      <label for="fone" class="form-control-label">Telefone (DDD + Seu número)</label>
-                      <input name="usuarioTelefone" class="form-control" type="number" required >
+                      <!-- first name -->
+                      <label for="name" class="form-control-label">Nome</label>
+                      <input name="usuarioNome" class="form-control" type="text" required>
                     </div>
 
+                    <div class="form-group">
+                      <label for="surname" class="form-control-label">Sobrenome</label>
+                      <input name="usuarioSobrenome" class="form-control" type="text" required >
+                    </div>
+     
+                    <div class="form-group">
+                      <label class="form-control-label">E-mail</label>
+                      <input name="usuarioEmail"  class="form-control" type="text" required >
+                    </div>
+                    
+                    <div class="form-group">
+                      <label class="form-control-label">Senha</label>
+                      <input name="usuarioSenha" class="form-control" type="password" required >
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-control-label">Repita a senha</label>
+                      <input name="repeteSenha" class="form-control" type="password" required >
+                    </div>
+
+                    <div class="form-group">              
+                      <label class="checkbox inline">
+                            <input type="checkbox" id="inlineCheckbox1" value="option1"> Eu aceito as condições e entendendo os riscos.
+                        </label>
+                        
+                    </div>
                     <div class="form-group py-4">
-                    <button type="submit" class="btn btn-big btn-success">Evniar</button>
+                    <button type="submit" class="btn btn-big btn-success">Cadastrar</button>
                     </div>
                 </form>
              
