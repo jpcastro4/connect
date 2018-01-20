@@ -45,8 +45,8 @@ class Usuario_model extends CI_Model{
         //     'region' => 'us-east-1',
         //     'version' => 'latest',
         //     'credentials' => array(
-        //         'key'    => 'AKIAJLI4ZCLFS5XXCKLA',
-        //         'secret' => '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'
+        //         'key'    =>  $this->config->item('aws_key'),
+        //         'secret' => $this->config->item('aws_secret')
         //         )
         //     ));
         
@@ -354,7 +354,7 @@ class Usuario_model extends CI_Model{
 
             if($row->usuarioBlock == 0){
 
-                $this->db->where('id',$row->usuarioID);
+                $this->db->where('usuarioID',$row->usuarioID);
                 $this->db->update('usuarios',array('usuarioDataUltimoLogin'=>date('Y-m-d H:i:s') ) );
 
                 $this->native_session->set('usuario_id',$row->usuarioID);

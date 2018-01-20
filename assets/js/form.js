@@ -33,7 +33,9 @@ var formsave = function(){
 
                 if(data.result == 'success'){
                     if(data.redirect){
-                        alert(data.message)
+                        if(data.message){
+                            alert(data.message)
+                        }
                         window.location.href = data.redirect
                     }else{
                         alert(data.message)

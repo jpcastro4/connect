@@ -54,6 +54,16 @@ class Backoffice extends CI_Controller {
         $this->native_session->unset_userdata('usaurio_id');
         redirect('backoffice/login');
     }
+
+    public function login(){
+
+        $data['titulo'] = 'Login - Connect Money';
+ 
+        $data['mensagem'] = $this->native_session->get_flashdata('mensagem');
+        $data['mensagem_erro'] = $this->native_session->get_flashdata('mensagem_erro');
+
+        $this->load->view('backoffice/login', $data);
+    }
     
 
     public function carrinho($pacoteID){

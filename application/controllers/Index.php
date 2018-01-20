@@ -253,38 +253,38 @@ class Index extends CI_Controller {
 
     }
 
-    public function valida($token){
+    // public function valida($token){
 
-        if(!empty($token)){
+    //     if(!empty($token)){
 
-            $this->db->like('token',$token);
-            $users = $this->db->get('usuarios');
-            $user = $users->row();
+    //         $this->db->like('token',$token);
+    //         $users = $this->db->get('usuarios');
+    //         $user = $users->row();
 
-            if($users->num_rows() > 0 ){
+    //         if($users->num_rows() > 0 ){
 
-                if($user->validado == 0 ){
+    //             if($user->validado == 0 ){
 
-                    $this->db->where('id',$user->id);
-                    $this->db->update('usuarios',array('validado'=>'1'));
-                    $this->native_session->set('user_id',$user->id);
-                    $this->native_session->set_flashdata('mensagem','<div class="alert alert-success">E-mail validado</div>');
-                    redirect('painel');
+    //                 $this->db->where('id',$user->id);
+    //                 $this->db->update('usuarios',array('validado'=>'1'));
+    //                 $this->native_session->set('user_id',$user->id);
+    //                 $this->native_session->set_flashdata('mensagem','<div class="alert alert-success">E-mail validado</div>');
+    //                 redirect('painel');
 
-                }else{
+    //             }else{
 
-                    $this->native_session->set_flashdata('mensagem','<div class="alert alert-info">O e-mail já havia sido validado. Faça login</div>');
-                    redirect('painel');
-                }
+    //                 $this->native_session->set_flashdata('mensagem','<div class="alert alert-info">O e-mail já havia sido validado. Faça login</div>');
+    //                 redirect('painel');
+    //             }
                 
-            }
+    //         }
 
-            $this->native_session->set_flashdata('mensagem','<div class="alert alert-danger">Usuário não existe ou não está cadastrado</div>');
-            redirect('painel');
+    //         $this->native_session->set_flashdata('mensagem','<div class="alert alert-danger">Usuário não existe ou não está cadastrado</div>');
+    //         redirect('painel');
 
-        }
+    //     }
 
-        redirect('painel');
-    }
+    //     redirect('painel');
+    // }
     
 }
