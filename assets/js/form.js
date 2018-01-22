@@ -3,10 +3,15 @@
         $('form').on('submit',function(e){
             e.preventDefault();
 
-            var form = $(this)
+            const form = $(this)
 
             var ok = true
 
+            const btn = '.btn[type=submit]',
+                  contentBtn = form.find(btn).html()
+            
+            form.find(btn).html('<i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>');
+            
             form.find('input[required]').each(function(e){
                 
                 if( $(this).val() == ''){
@@ -26,6 +31,7 @@
                 $.post(site_url+'form/'+action, campos , function(data){
 
                     console.log(data.message)
+                    form.find(btn).html(contentBtn);
                     if(data.result == 'success'){
                         if(data.redirect){
                             if(data.message){
@@ -48,10 +54,15 @@
                         })
                     }
 
+                    
+
                 },'json')
                 .fail(function(e){
                     console.log(e)
                 })
+            }else{
+
+                form.find(btn).html(contentBtn);
             }
         })
 
@@ -66,13 +77,24 @@
     var abreDoacao = function(){
 
         $('#abreposicao').on('click', function(){
+            var $this = $(this),
+                btnContent = $(this).html()
 
-            var numDoacoes = $(this).data('numdoacoes')
+            $this.html('<i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>')
+
+            var numDoacoes = $this.data('numdoacoes')
 
             $.post(site_url + 'form/abrePosicao', { numDoacoes: numDoacoes }, function(data){
-
+                console.log(data)
+                $this.html(btnContent)
                 if (data.result == 'success') {
                     alert(data.message)
+                    if(data.redirect){
+                        if(data.message){
+                            alert(data.message)
+                        }
+                        window.location.href = data.redirect
+                    }
                 }
 
                 if (data.result == 'error') {
@@ -81,6 +103,7 @@
 
             },'json')
             .fail(function (e) {
+                $this.html(btnContent)
                 console.log(e.responseText )
             })
 

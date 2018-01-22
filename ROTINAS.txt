@@ -25,7 +25,8 @@ Tarefa cron
 - Todo dia 15 processando reentradas
 -- abre posicionamento tipo 2 (reentrada) de doações em todos os ativos definindo para quem devem doar.
 
-
+Fazer o primeiro cadastro e executar a geneses 
+ 
 --
 
 Ao abrir posicionamento

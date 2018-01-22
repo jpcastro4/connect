@@ -129,8 +129,8 @@
                                         <?php if(!empty($doacoes)): ?>
                                             <?php foreach($doacoes as $doacao): ?>
                                             <tr>
-                                                <td><a href="#"><?php echo $receb->doacaoCod ?></a></td>
-                                                <td><?php echo $doacao->doadorNome ?></td>
+                                                <td><a href="#"><?php echo $doacao->doacaoCod ?></a></td>
+                                                <td><?php echo $this->backoffice_model->posicUser($doacao->posicUsuarioRecebedor)->usuarioNome; ?></td>
                                                 <td>
                                                     <badge class="badge badge-warning"><?php echo $doacao->doacaoStatus ?></badge>
                                                 </td>
@@ -168,10 +168,10 @@
 
                                         <tbody>
                                         <?php if(!empty($recebimentos)): ?>
-                                        <?php foreach($recebimentos as $receb):  ?>
+                                        <?php foreach($recebimentos as $receb): ?>
                                         <tr>
                                             <td><a href="#"><?php echo $receb->doacaoCod ?></a></td>
-                                            <td><?php echo $receb->usuarioNome ?></td>
+                                            <td><?php echo $this->backoffice_model->posicUser($receb->posicUsuarioDoador)->usuarioNome; ?></td>
                                             <td>
                                                 <badge class="badge badge-warning"><?php echo $receb->doacaoStatus ?></badge>
                                             </td>

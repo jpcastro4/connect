@@ -44,7 +44,7 @@ class Backoffice extends CI_Controller {
         $data['conta'] = $this->backoffice_model->conta();
 
         $data['recebimentos'] = $this->backoffice_model->recebimentos(true);
-        //$data['doacoes'] = $this->backoffice_model->doacoes(true);
+        $data['doacoes'] = $this->backoffice_model->doacoes(true);
 
         $this->load->view('backoffice/templates/header', $data);
         $this->load->view('backoffice/index');
