@@ -1,4 +1,6 @@
 <?php
+
+
 class Backoffice_model extends CI_Model{
 
     public $bonus = array(10,3,1,1);
@@ -11,81 +13,60 @@ class Backoffice_model extends CI_Model{
         date_default_timezone_set('America/Sao_Paulo');
     }
 
-    public function todasAsDoacoes(){
-        $this->db->where('status',1);
-        $this->db->or_where('status',2);
-        $doacoes = $this->db->get('doacoes');
+    ///////////////////////////////////////////////////////////////////////////////////////   GENESES
 
-        if($doacoes->num_rows() > 0 ){
+    public function geneses(){
 
-            return $doacoes->result();
+        $sessao = $this->native_session->get('usuario_id');
+
+        $return = $this->db->get('usuarios');
+
+        if($return->num_rows() == 1){
+
+            //dando status 1 para o cabeça
+            $this->db->where('usuarioID',$sessao);
+            $this->db->update('usuarios', array('usuarioStatus'=>1));
+ 
+            //criando posicionamento
+            $posicao = array(
+                'posicGuid'=>uniqid(),
+                'usuarioID'=>$sessao,
+                'posicTipo'=>1,
+                'posicStatus'=>1
+            );
+
+            $this->db->insert('usuarios_posicoes',$posicao);
+
+            $posicID = $this->db->insert_id();
+            
+            //não há relacionamento nem doacao para o primeiro posicionament
+            // // relacionamento novo doador com recebedor
+            // $doacao_rede = array(
+            //     'posicID'=>$posicID,
+            //     'posicDoadorID'=>$posicID,
+            //     'redeTipo'=>1,
+            //     'redePerna'=>1,
+            //     'redeStatus'=>1
+            // );
+
+            // $this->db->insert('doacoes_rede',$doacao_rede);
+
+            // $cronometro = strtotime(date('Y-m-d H:i:s'))+86400;
+            // //abrindo doacao
+            // $doacao = array(
+            //     'posicUsuarioDoador'=>$posicID,
+            //     'posicUsuarioRecebedor'=>$posicRecebedor->posicID,
+            //     'doacaoValor'=>50,
+            //     'doacaoTipo'=>1,
+            //     'doacaoDtentrada'=>date('Y-m-d H:i:s'),
+            //     'doacaoCronometro'=>date('Y-m-d H:i:s', $cronometro),
+            // );
+
+            // $this->db->insert('doacoes', $doacao );
+
+            
         }
-
-        return false;
     }
-
-    public function afiliadoUsers(){
-
-        $this->db->where_in('idAfiliado', $this->native_session->get('afiliado_id') );
-        $afiliado = $this->db->get('afiliados')->row();
-
-        $result['afiliado'] =  $afiliado;
-        
-        $result['total'] = $this->db->get('usuarios_contas')->num_rows();
-
-        $this->db->where('af', $afiliado->rastreamento );
-        $result['total_afiliados'] = $this->db->get('usuarios_contas')->num_rows();
-
-        $this->db->where('af', $afiliado->rastreamento );
-        $result['indicados'] = $this->db->get('usuarios_contas')->result();
-
-        return (object) $result;
-    }
-
-    public function lista(){
-        
-        $this->db->where('block',0);
-        $result['total'] = $this->db->get('usuarios_contas')->num_rows();
-
-        $result['indicados'] = $this->db->get('usuarios_contas')->result();
-
-        return (object) $result;
-    }
-
-    public function lista_desatualizados(){
-
-        $this->db->where(array('dataUltimoLogin'=>'0000-00-00 00:00:00','block'=>0) );
-        $result['total'] = $this->db->get('usuarios_contas')->num_rows();
-
-        $this->db->where(array('dataUltimoLogin'=>'0000-00-00 00:00:00','block'=>0) );
-        $result['indicados'] = $this->db->get('usuarios_contas')->result();
-
-        return (object) $result;
-    }
-
-    public function fila_aptos(){
-
-        $this->db->where(array('dataUltimoLogin !='=>'0000-00-00 00:00:00','block'=>0) );
-        $result['total'] = $this->db->get('usuarios_contas')->num_rows();
-
-        $this->db->where(array('dataUltimoLogin !='=>'0000-00-00 00:00:00','block'=>0) );
-        $result['indicados'] = $this->db->get('usuarios_contas')->result();
-
-        return (object) $result;
-    }
-
-    
-    //////////////////////////////////////////////////////////////////////////////////////   SUPER USER
-
-    public function superUser($user){
-
-        $this->native_session->set('user_id', $user);
-        $this->native_session->set('superuser',true);
-        redirect('painel');
-    }
-
-
-
     //////////////////////////////////////////////////////////////////////////////////////   VIEWS
    	
    	public function conta(){
@@ -98,141 +79,22 @@ class Backoffice_model extends CI_Model{
         $row = $user->row();
 	
 		return $row;
+    }    
 
-    }
-
-    public function conta_coluna($coluna, $parametro = null){
+    public function recebimentos($fStatus = false){
 
         $sessao = $this->native_session->get('usuario_id');
 
-        $this->db->where('usuarioID', $sessao);
-        $user = $this->db->get('usuarios');
+        $this->db->select('*, u.usuarioID');
+        $this->db->from('doacoes as d');
+        $this->db->join('usuarios_posicoes as up', 'd.posicUsuarioRecebedor = up.posicID');
+        $this->db->join('usuarios as u', 'up.usuarioID = u.usuarioID');
+        $this->db->where('u.usuarioID',$sessao);
 
-        $row = $user->row();
-
-        if(is_null($parametro)){
-
-            return $row->$coluna;
-        }
-
-        preg_match('/[^\s]*/i', $row->$coluna, $matches);
-
-        return $matches[0];
-    }
-
-    public function usuariosContas(){
-        $conta = $this->native_session->get('usuario_id');
-
-        $this->db->where(array( 'subConta'=> $conta) );
-        $usuarios = $this->db->get('usuarios_sub');
-
-        if( $usuarios->num_rows() > 0 ){
-
-            return $usuarios->result();
-        }
-
-        return false;
-    }
-
-    public function bancos($recebedor = null){
-
-        if($recebedor == null){
-            $conta = $this->native_session->get('usuario_id');
-        }else{
-            $conta = $recebedor;
+        if($fStatus == true ){
+            $this->db->where('d.doacaoStatus',0);  
         }
         
-
-        $this->db->where_in('usuarioID', $conta);
-        $usuarios = $this->db->get('usuarios_bancos');
-
-        if( $usuarios->num_rows() > 0 ){
-
-            return $usuarios->result();
-        }
-
-        return false;
-    }
-
-
-
-    public function user(){
-
-        $sessao = $this->native_session->get('user_id');
-
-        $this->db->from('usuarios');
-        $this->db->where('usuarios.idUsuario',$sessao);
-        $this->db->join('usuarios_sc', 'usuarios_sc.idUsuario = usuarios.idUsuario');
-        $this->db->join('usuarios_contas', 'usuarios_contas.id = usuarios.conta_id');
-        $user = $this->db->get();
-
-        return $user->row();
-    }
-
-    public function user_coluna($coluna){
-
-        $sessao = $this->native_session->get('user_id');
-
-        $this->db->from('usuarios');
-        $this->db->where('usuarios.idUsuario',$sessao);
-        $this->db->join('usuarios_sc', 'usuarios_sc.idUsuario = usuarios.idUsuario');
-        $user = $this->db->get();
-
-        $row = $user->row();
-
-        return $row->$coluna;
-   
-    }
-    
-    
-    public function infoUser($usuario){
-
-        //$result = array();
-
-        $this->db->from('usuarios');
-        $this->db->where_in('usuarios.idUsuario',$usuario);
-        $this->db->join('usuarios_sc', 'usuarios_sc.idUsuario = usuarios.idUsuario');
-        $this->db->join('usuarios_contas', 'usuarios.conta_id = usuarios_contas.id');
-        $user = $this->db->get();
-
-        $result = $user->row();
-
-        return  $result;
-    }
-
-
-    public function recebimentos(){
-
-        $this->db->where('idRecebedor', $this->native_session->get('usuario_id'));
-        $recebimentos = $this->db->get('doacoes');
-
-        if( $recebimentos->num_rows() > 0){
-
-            return $recebimentos->result();
-        }
-
-        return false;
-    }
-
-    public function doacoes(){
-
-        $this->db->where('idDoador', $this->native_session->get('usuario_id'));
-        $recebimentos = $this->db->get('doacoes');
-
-        if( $recebimentos->num_rows() > 0){
-
-            return $recebimentos->result();
-        }
-
-        return false;
-    }
-
-    public function doacoesReentradas(){
-
-        // $this->db->select('idUsuario,conta_id,tipagem');
-        $this->db->where( array('tipagem'=>'R','conta_id'=>$this->native_session->get('conta_id') ) );
-        $this->db->from('usuarios');
-        $this->db->join('doacoes', 'doacoes.idDoador = usuarios.idUsuario ' );
         $recebimentos = $this->db->get();
 
         if( $recebimentos->num_rows() > 0){
@@ -243,9 +105,297 @@ class Backoffice_model extends CI_Model{
         return false;
     }
 
+    public function doacoes($fStatus = false){
+
+        $sessao = $this->native_session->get('usuario_id');
+
+        $this->db->select('*, u.usuarioID, U.usuarioID, U.usuarioNome, U.usuarioTelefone');
+        $this->db->from('doacoes as d');
+        $this->db->join('usuarios_posicoes as up', 'up.posicUsuarioDoador = d.posicID');
+        $this->db->join('usuarios as u', 'up.usuarioID = u.usuarioID');
+        $this->db->where('u.usuarioID',$sessao);
+
+        $this->db->join('usuarios as U', 'up.posicUplineRecebedor = U.usuarioID');
+
+        if($fStatus == true ){
+            $this->db->where('doacoes.doacaoStatus',0);  
+        }
+        
+        $recebimentos = $this->db->get();
+
+        if( $recebimentos->num_rows() > 0){
+
+            return $recebimentos->result();
+        }
+
+        return false;
+    }
+
+    ////////////////////////////////////////////////////////////////////////// DOACOES
+
+    private function indicados($posicID){
+
+        $this->db->where('posicID',$posicID);
+        $result = $this->db->get('doacoes_rede');
+
+        if( $result->num_rows() > 0){
+            
+            return $result->row();
+        }
+        return $result->num_rows();
+    }
 
 
-    ///////////////////////////////////////////////////////////////////////// FUNÇÕES DE UPLINE
+    public $arrayRedeDoacoes = array();
+
+    public function RedeDoacoes($posicID = 1, $linha = 1){ 
+
+        //INDICA O USUARIO MATRIZ
+        $this->db->select('*');
+        $this->db->where('dr.posicID', $posicID);
+        $this->db->from('doacoes_rede as dr');
+        $this->db->join('usuarios_posicoes as up', 'dr.posicID = up.posicID' );
+        $this->db->join('usuarios as u', 'up.usuarioID = u.usuarioID' );
+        
+        $return = $this->db->get();
+
+        if($return->num_rows() > 0){
+            
+            //FAZ O LAÇO NO USUARIOS
+            foreach($return->result() as $row){
+                                
+                $this->arrayRedeDoacoes[$linha][] = $row;
+
+                $proximo = $row->posicDoadorID;
+                $this->RedeDoacoes($proximo, $linha+1);
+            }
+
+           //dump($return->result());
+            //echo '<pre>'.print_r($this->$arrayRedeDoacoes).'</pre>';
+            
+        }else{
+
+            $this->db->select('*');
+            $this->db->where('posicID',1);
+            $this->db->from('usuarios_posicoes as up');
+            $this->db->join('usuarios as u', 'up.usuarioID = u.usuarioID' );
+            $return = $this->db->get();
+            
+            //abre novo posicionamento para o primeiro usuario
+            $this->abrePosicionamento($return->row());
+            //dump($return->row());
+        }
+              
+        // retornando para dentro do rastreamento
+        //return $this->arrayRedeDoacoes;
+    }
+
+
+    public function countArrayDoacoes(){
+
+        return count($this->arrayRedeDoacoes);
+    }
+
+    //ENFILERA NA HORIZONTAL DA ESQUERDA PARA A DIREITA
+    public function RastreadorRedeDoacoes( $linha = 1, $nivel = null, $travado = 1){
+        //set_time_limit(800);
+
+        if( $travado == 1 ){
+            
+            $nivel = $this->countArrayDoacoes();
+        }
+      
+        
+        if( $nivel > 0 ){ //VERIRICA SE O NIVEL AINDA É MAIOR QUE 0.
+            
+            foreach( $this->arrayRedeDoacoes[$linha] as $user){ // OBSERVANDO AS LINHAS DA ESQUERDA PRA DIREITA
+                /*
+                - Verificar quantas doações estão sendo solicitadas
+                - Processa a fila com todos os posicionados 
+                -- verificar o status do recebedor ( se 0 nao pode receber ninguem)
+                -- verifica o status do subusuario recebedor se ele é uma reentrada não posiciona ali.
+                -- verificar se o subusario recebedor tem menos de 3 doadores.
+                -- e coloca os aptos em uma array 
+                - Escolhe o recebedor, cria os subusarios tipo 1 (posicionamento)  e abre as doações                 
+                */
+
+                if($user->usuarioBlock == 1) continue; // se a conta está bloqueada
+
+                if($user->usuarioStatus == 0) continue; // se a conta não está ativa
+
+                if($user->posicStatus == 1) continue;  // se o posicionamento já está concluido
+
+                if($user->redeTipo == 2 ) continue; // se é uma reentrada
+                
+                $indicados = $this->indicados($user->posicID);
+                if($indicados == 3) continue;  // se ja tem a quantidade de indicados
+
+                $user->indicados = $indicados;
+                 
+                return $this->abrePosicionamento($user);
+                
+                break;
+            }
+            
+            return $this->RastreadorRedeDoacoes( $linha+1, $nivel-1, 0 );  
+        }      
+       
+        return false;
+        
+    }
+
+    private function verificaPropagacaoLateral($posicRecebedorID){
+
+        //id do upline
+        $this->db->where('posicDoadorID',$posicRecebedorID);
+        $return = $this->db->get('doacoes_rede');
+
+        if($return->num_rows() > 0){
+
+            $this->db->where('posicID',$return->row()->posicID );
+            $this->db->where('posicStatus',1);
+            return $this->db->get('doacoes_rede')->num_rows();
+
+        }
+        return false;
+        // quantos downlines ele tem
+    }
+     
+    private function abrePosicionamento($posicRecebedor){
+        
+        $sessao = $this->native_session->get('usuario_id');
+
+        if($posicRecebedor->posicRepeat == 1 ){
+            
+            //verificar se ele tem irmãos ao lado que já doaram e estao abertos. Se for igual a 3 posiciona um repeat
+            if($this->verificaPropagacaoLateral($posicRecebedor->posicID) == 3 ){
+                //criando posicionamento repeat
+                $p  = array(
+                    'posicGuid'=>uniqid(),
+                    'usuarioID'=>$posicRecebedorID->usuarioID,
+                    'posicTipo'=>1,
+                    'posicStatus'=>1
+                );
+
+                $this->db->insert('usuarios_posicoes',$p );
+                
+                // relacionamento novo novo posic com seu pai ele mesmo
+                $d  = array(
+                    'posicID'=>$posicRecebedorID,
+                    'posicDoadorID'=>$this->db->insert_id(),
+                    'redeTipo'=>1,
+                    'redeStatus'=>1,
+                    'redePerna'=>1,
+                );
+
+                $this->db->insert('doacoes_rede',$d );
+            }
+        }
+
+        
+        //verifica quantos indicados tem e as pernas livres
+        $indicados = $this->indicados($posicRecebedor->posicID);
+        if( $indicados == 0 ){
+            $perna = 1;
+        }else{
+
+            $pernasExistentes = array();
+
+            foreach ($indicados as $user) {
+                $pernasExistentes[] = $user->redePerna;
+            }
+            
+            if( ! in_array( 1,  $pernasExistentes)  ){
+                $perna = 1;
+
+            }elseif ( ! in_array( 2 ,  $pernasExistentes) ) {
+                $perna = 2;
+
+            }elseif ( ! in_array( 3 ,  $pernasExistentes) ) {
+                $perna = 3;
+
+            }
+        }
+
+        //criando posicionamento
+        $posicao = array(
+            'posicGuid'=>uniqid(),
+            'usuarioID'=>$sessao,
+            'posicTipo'=>1
+        );
+
+        $this->db->insert('usuarios_posicoes',$posicao);
+
+        $posicID = $this->db->insert_id();
+        
+        // relacionamento novo doador com recebedor
+        $doacao_rede = array(
+            'posicID'=>$posicRecebedor->posicID,
+            'posicDoadorID'=>$posicID,
+            'redeTipo'=>1,
+            'redePerna'=>$perna
+        );
+
+        $this->db->insert('doacoes_rede',$doacao_rede);
+
+        $cronometro = strtotime(date('Y-m-d H:i:s'))+86400;
+        //abrindo doacao
+        $doacao = array(
+            'posicUsuarioDoador'=>$posicID,
+            'posicUsuarioRecebedor'=>$posicRecebedor->posicID,
+            'doacaoCod'=>'D'.uniqid(),
+            'doacaoValor'=>50,
+            'doacaoTipo'=>1,
+            'doacaoDtentrada'=>date('Y-m-d H:i:s'),
+            'doacaoCronometro'=>date('Y-m-d H:i:s', $cronometro),
+        );
+
+        $this->db->insert('doacoes', $doacao );
+
+        return true;
+    }
+
+    // Start posicionamentos
+    public function processarPosicionamento(){
+ 
+        if(empty($this->input->post('numDoacoes'))){
+            echo json_encode(array('result'=>'error','message'=>'Escolha a quantidade de doações'));
+            return;
+        }
+        
+        $numDoacoes = $this->input->post('numDoacoes');
+
+        if( $numDoacoes > 1 ){
+
+            // $a = $numDoacoes;
+            // while ($numDoacoes <= $a ) {
+                
+            //     $this->RedeDoacoes();
+            //     $this->RastreadorRedeDoacoes();
+            // }
+
+        }else{
+
+            $this->RedeDoacoes();
+            return $this->RastreadorRedeDoacoes();
+        }
+
+        // echo json_encode(array('result'=>'success','message'=>$message ));
+        // return;
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////   DOACOES
+
+    public function aceitaDoacao(){
+
+
+    }
+
+
+
+
+    /////////////////////////////////////////////////////////////////////////   FUNÇÕES DE UPLINE
 
     //SE É LIDER 
 
@@ -809,7 +959,7 @@ class Backoffice_model extends CI_Model{
     
     public $uplines = array();
     //DEFININDO O RECEBEDOR ACIMA
-    public function ArvoreUplines($idUsuario, $superCiclo, $niveis = 2, $sobe = 1){
+    public function ArvoreUplines($idUsuario, $superCiclo, $niveis = 2, $sobe = 1){ //SUBINDO DOIS NIVEIS
 
         if($niveis > 0){
 
@@ -1008,76 +1158,76 @@ class Backoffice_model extends CI_Model{
 
 
 
-    public function geneses(){
+    // public function geneses(){
 
-        //CADASTRA O PRIMEIRO LOGIN PARA O FECHAMENTO SEGUINTE - usuarios / usuarios_sc
-        $this->db->where('idUsuario',1);
-        $usuarios = $this->db->get('usuarios');
+    //     //CADASTRA O PRIMEIRO LOGIN PARA O FECHAMENTO SEGUINTE - usuarios / usuarios_sc
+    //     $this->db->where('idUsuario',1);
+    //     $usuarios = $this->db->get('usuarios');
 
-        if($usuarios->num_rows() == 0){
+    //     if($usuarios->num_rows() == 0){
 
-            $this->db->where('id',1);
-            $pre = $this->db->get('usuarios_contas');
+    //         $this->db->where('id',1);
+    //         $pre = $this->db->get('usuarios_contas');
             
-            $login = substr($pre->row()->email, 0, strpos($pre->row()->email, '@'));
+    //         $login = substr($pre->row()->email, 0, strpos($pre->row()->email, '@'));
 
-            $this->db->insert('usuarios',
-                array(
-                    'login'=>$login,
-                    'dataCadastro'=>date('Y-m-d H:i:s'),
-                    'superCicloUsuario'=>1,
-                    'token'=> md5(date('Y-m-d H:i:s').'-'.$login),
-                    'conta_id'=>1,
-                    'tipagem'=>'P',
-                    'jornada'=>1,
-                    'lider'=>1
-                    )
-                );
+    //         $this->db->insert('usuarios',
+    //             array(
+    //                 'login'=>$login,
+    //                 'dataCadastro'=>date('Y-m-d H:i:s'),
+    //                 'superCicloUsuario'=>1,
+    //                 'token'=> md5(date('Y-m-d H:i:s').'-'.$login),
+    //                 'conta_id'=>1,
+    //                 'tipagem'=>'P',
+    //                 'jornada'=>1,
+    //                 'lider'=>1
+    //                 )
+    //             );
 
-            $this->db->insert('usuarios_sc',
-                array(
-                    'idUsuario'=>1,
-                    'superCiclo'=>1,
-                    'dataEntrada'=>date('Y-m-d H:i:s'),
-                    'ultimaAtividade'=>date('Y-m-d H:i:s'),
-                    'status'=>1,
-                    'jornada'=> 1,
-                    'fechamento'=>1,
-                    'reentradas'=>0,
-                    )
-                );
+    //         $this->db->insert('usuarios_sc',
+    //             array(
+    //                 'idUsuario'=>1,
+    //                 'superCiclo'=>1,
+    //                 'dataEntrada'=>date('Y-m-d H:i:s'),
+    //                 'ultimaAtividade'=>date('Y-m-d H:i:s'),
+    //                 'status'=>1,
+    //                 'jornada'=> 1,
+    //                 'fechamento'=>1,
+    //                 'reentradas'=>0,
+    //                 )
+    //             );
 
-            echo "Idealizador cadastrado</br>";
-        }
+    //         echo "Idealizador cadastrado</br>";
+    //     }
 
-        echo "Idealizador encontrado</br>";
+    //     echo "Idealizador encontrado</br>";
 
-        //CONTA QUANTOS FECHAMENTOS E JORNADAS O IDEALIZADOR FEZ
-        $this->db->where('idUsuario', 1);
-        $result = $this->db->get('indicadores');
+    //     //CONTA QUANTOS FECHAMENTOS E JORNADAS O IDEALIZADOR FEZ
+    //     $this->db->where('idUsuario', 1);
+    //     $result = $this->db->get('indicadores');
 
-        if( $result->num_rows() <= 0 ){
+    //     if( $result->num_rows() <= 0 ){
 
-            $this->db->insert('indicadores',
-                array(
-                    'idIndicador'=>1,
-                    'idUsuario'=>1, 
-                    'superCiclo'=>1,
-                    'posicao'=>1,
-                    'jornada'=>1,
-                    'fechamento'=>$result->num_rows()+1
-                    )
-                );            
-        }
+    //         $this->db->insert('indicadores',
+    //             array(
+    //                 'idIndicador'=>1,
+    //                 'idUsuario'=>1, 
+    //                 'superCiclo'=>1,
+    //                 'posicao'=>1,
+    //                 'jornada'=>1,
+    //                 'fechamento'=>$result->num_rows()+1
+    //                 )
+    //             );            
+    //     }
 
-        echo "Fechamento contabilizado</br>";
+    //     echo "Fechamento contabilizado</br>";
 
-        //$fechamento = $result->num_rows()+1;
+    //     //$fechamento = $result->num_rows()+1;
 
-        //DERRAMA OS PRIMEIROS INDICADOS - indicadores
-        //$this->alimentaCiclo1(1);
+    //     //DERRAMA OS PRIMEIROS INDICADOS - indicadores
+    //     //$this->alimentaCiclo1(1);
 
-    }
+    // }
 
 
     public function geneses2(){

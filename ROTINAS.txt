@@ -1,18 +1,3 @@
-Tela de Cadastro  falta validação do numero de celular
-
-Tela de login ok
-
-Tela do Dashboard falta doações recebidas e pagamentos
-
-Tela de perfil ok
-Tela de picpay ok
-Tela de senha ok
-
-
-Tela de esqueci a senha falta
-
-
-
 Ver na tela principal
 
 --
@@ -35,42 +20,43 @@ Lista de doacõea receber com cronometro
  
 --
 
-Tarefa cron passando de minuto em minuto pra ver doa��es cairam e removendo doadores
+Tarefa cron 
+- De minuto em minuto pra ver doa��es cairam e removendo doadores
+- Todo dia 15 processando reentradas
+-- abre posicionamento tipo 2 (reentrada) de doações em todos os ativos definindo para quem devem doar.
+
 
 --
 
+Ao abrir posicionamento
+- Verificar quantas doações estão sendo solicitadas
+- Processa a fila com todos os posicionados 
+-- verificar o status do recebedor ( se 0 nao pode receber ninguem)
+-- verifica o status do subusuario recebedor se ele é uma reentrada não posiciona ali.
+-- verificar se o subusario recebedor tem menos de 3 doadores.
+-- e coloca os aptos em uma array 
+- Escolhe o recebedor, cria os subusarios tipo 1 (posicionamento)  e abre as doações 
 
 
-Rotina de compra de posicionamento
+Ao concluir a doação
+doacao
+- definir doacaoStatus 1
+- definir doacao_rede redeStatus 1
+- definir posicionamento do doador posicStatus 1
 
-pega o id do solicitante e traz o perfil dele inteiro
+recebedor
+- pontuar recebedor pelo recebimento / numRecebimentos
+- somar saldo recebido do recebedor 
+- pontuar recebedor pela reentrada (se a doacao é uma reentrada) / numReentradas
+- verificar as atitudes do recebedor e definir upgrade de nivel 
 
-entra no rastreamento
-forma a fila e organiza as linhas de recebedores
-conta as linhas formadas
+doador
+- pontuar quantidade de doações / numDoacoes
+- somar saldo doado do doador
+- verificar as atitudes do doador e definir upgrade de nivel
 
-verifica na ultima linha
-se existem vagas abertas
--> se não
-    se existem doadores não concluidos
-    -> se sim 
-    pede para aguardar processamento da recebido
-
-- se sim 
-    libera a formação de uma nova linha
-
-    verifica se ele é repeat
-
--> se não 
-verifica o nivel dele para definir quantos posicionamentos ele deve ocupar
-
-se o recebedor é repeat
--> se sim
-verifica se ele nao tem downlines
-    -> se nao 
-    cria um novo sub usuario e encaixa com doação liberada
-
--> se nao 
-cria um novo sub usuario e encaixa com doação aberta e cronometro
-
-
+se pela primeira vez ( a primeira doação pode ser indetificada pelo nivel 0 ) 
+- definir status do doador como 1  
+    indicador do doador
+    - pontuar o indicador pela indicação do doador / numIndicadoes
+    - verificar as atitudes do indicador e definir upgrade

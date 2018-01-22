@@ -57,7 +57,7 @@
 
         <div class="collapse navbar-collapse" id="navbarNav">
             <a class="navbar-brand logo hidden-md-down" href="#">
-              <img src="<?php echo base_url()?>assets/img/logo.png" alt="Modish">
+              <img width="110" src="<?php echo base_url()?>assets/img/logo-branco.png" alt="Modish">
              </a>
 
             <button class="sidebar-toggle btn btn-flat hidden-md-down" id="toggle-sidebar-desktop">
@@ -114,16 +114,16 @@
                         <span class="dropdown-item">
                           <input readonly class="form-control" value="ID: <?php echo $conta->usuarioLogin; ?>" />
                         </span>
-                        <a class="dropdown-item" href="#">
-                            <i class="fa fa-user"></i> <span>Profile</span></a>
+                        <a class="dropdown-item" href="<?php echo base_url('backoffice/perfil') ?>">
+                            <i class="fa fa-user"></i> <span>Perfil</span></a>
                         </a>
-                        <a class="dropdown-item" href="#">
+                        <!-- <a class="dropdown-item" href="#">
                             <i class="fa fa-comment"></i> <span>Messages</span></a>
-                        </a>
-                        <a class="dropdown-item" href="#">
+                        </a> -->
+                        <!-- <a class="dropdown-item" href="#">
                             <i class="fa fa-cog"></i> <span>Settings</span></a>
-                        </a>
-                        <a class="dropdown-item" href="#">
+                        </a> -->
+                        <a class="dropdown-item" href="<?php echo base_url('backoffice/sair') ?>">
                             <i class="fa fa-sign-out"></i> <span>Logout</span></a>
                         </a>
                     </div>

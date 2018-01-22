@@ -30,6 +30,10 @@ class Form extends CI_Controller {
         $this->usuario->validaCode();
     }
 
+    public function finalizar(){
+        $this->usuario->concluiConta();
+    }
+
     public function login(){
 
         $this->usuario->usuarioLogin();
@@ -40,10 +44,16 @@ class Form extends CI_Controller {
         $this->usuario->RecuperarSenha();
     }
 
-    public function posiciona(){
+    public function preview(){
 
-        $this->backoffice->posiciona();
+        $this->backoffice->RedeDoacoes();
+        
     }
+
+    // public function posiciona(){
+
+    //     $this->backoffice->posiciona();
+    // }
 
     public function perfil(){
         $this->usuario->alteraPerfil();
@@ -56,6 +66,11 @@ class Form extends CI_Controller {
     public function picpay(){
 
         $this->usuario->picPay();
+    }
+
+    public function abrePosicao(){
+
+        $this->backoffice->processarPosicionamento();
     }
 
     //ADMINISTRATIVO 

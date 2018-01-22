@@ -56,13 +56,13 @@ $route['404_override'] = '';
 
 $route['cadastro/(:any)'] = 'index/cadastro/$1';
 $route['cadastro'] = 'index/cadastro';
+$route['valida'] = 'index/valida';
+$route['finaliza'] = 'index/finaliza';
 
 $route['politicas'] = 'index/politicas';
 
 $route['ativacao/(:num)'] = 'index/ativacao/$1';
 $route['valida/(:any)'] = 'index/valida/$1';
-
-$route['cadastrar'] = 'painel/cadastrar';
 
 $route['amigo/(:any)'] = 'painel/amigo/$1';
 $route['linkunico/amigo/(:any)'] = 'painel/linkunico/$1';

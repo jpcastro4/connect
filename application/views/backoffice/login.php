@@ -55,7 +55,7 @@
                                 <i class="fa fa-user-circle"></i>
                             </div> -->
 
-                            <div class="logo text-center py-4"><img src="<?php echo base_url() ?>assets/img/logo.png" alt=""></div>
+                            <div class="logo text-center py-4"><img width="250" src="<?php echo base_url() ?>assets/img/logo.png" alt=""></div>
 
                             <h4 class="text-light">Login</h4>
 
@@ -85,7 +85,7 @@
                             </form>  
                             <div class="user-links">
                                 <a href="<?php echo base_url()?>backoffice/esqueci" class="pull-left">Esqueceu a senha?</a>
-                                <a href="<?php echo base_url()?>backoffice/cadastro" class="pull-right">Cadatrar</a>
+                                <a href="<?php echo base_url()?>cadastro" class="pull-right">Cadastrar</a>
                             </div>
 
                         </div>
@@ -105,7 +105,7 @@
                     </script>
                 </div>
                  <div class="col-12 text-center">
-                  <p><img src="<?php echo base_url()?>assets/img/logo.png" alt=""></p>
+                  <p><img width="100" src="<?php echo base_url()?>assets/img/logo.png" alt=""></p>
                   <p>Connect Money Brazil</p>
                   </div>     
             </div>

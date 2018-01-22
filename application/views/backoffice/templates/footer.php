@@ -1,9 +1,11 @@
     </div>
     </div>
 
+    <script src="<?php echo base_url();?>assets/js/jquery.countdown.min.js" type="text/javascript"></script>
     <script src="<?php echo base_url('assets/js/form.js') ?>"> </script>
+
     <!-- <script src="<?php echo base_url()?>assets/bo/assets/js/bootbox-page/sweet-alert.min.js"></script>
-    <script src="<?php echo base_url();?>assets/bo/assets/js/jquery.countdown.js" type="text/javascript"></script>
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <script src="<?php echo base_url() ?>assets/ajuda/jquery.ui.touch-punch.min.js"></script> -->
 

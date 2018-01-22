@@ -41,10 +41,12 @@ class Index extends CI_Controller {
 
     public function valida(){  
 
-        $this->load->view('index/cadastrar', $data); 
+        $this->load->view('index/valida'); 
     }
 
     public function finaliza(){
+
+        $data = array();
         $indicadorLogin = $this->native_session->get('indicador');
 
         $this->db->where('usuarioLogin', $indicadorLogin);
@@ -55,7 +57,7 @@ class Index extends CI_Controller {
             $data['indicador'] =  $user->row()->usuarioNome;
         }        
 
-        $this->load->view('index/cadastrar', $data); 
+        $this->load->view('index/finaliza', $data); 
     }
 
     public function lista(){
@@ -196,10 +198,8 @@ class Index extends CI_Controller {
 
     }
 
-    public function home(){
-        $this->load->view('index/header');
-        $this->load->view('index/index');
-        $this->load->view('index/footer');
+    public function geneses(){
+       $this->backoffice_model->geneses();
     }
 
     public function manutencao(){

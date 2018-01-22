@@ -12,7 +12,7 @@
                         <div class="col-6 col-md-3">
                             <div class="widget-overview bg-primary-1">
                                 <div class="inner">
-                                    <h2>$<?php echo $conta->usuarioTotalRecebido ?></h2>
+                                    <h2>$<?php echo $conta->usuarioSaldoRecebido ?></h2>
                                     <p>Recebido</p>
                                 </div>
 
@@ -29,7 +29,7 @@
                         <div class="col-6 col-md-3">
                             <div class="widget-overview bg-info-1">
                                 <div class="inner">
-                                    <h2><?php echo $conta->usuarioTotalRecebido ?></h2>
+                                    <h2><?php echo $conta->usuarioNivel ?></h2>
                                     <p>Nível</p>
                                 </div>
 
@@ -46,7 +46,7 @@
                         <div class="col-6 col-md-3">
                             <div class="widget-overview bg-success-1">
                                 <div class="inner">
-                                    <h2>$<?php echo $conta->usuarioTotalRecebido ?></h2>
+                                    <h2>$<?php echo $conta->usuarioSaldoDoado ?></h2>
                                     <p>Total doado</p>
                                 </div>
 
@@ -63,7 +63,7 @@
                         <div class="col-6 col-md-3">
                             <div class="widget-overview bg-danger-1">
                                 <div class="inner">
-                                    <h2><?php echo $conta->usuarioTotalRecebido ?></h2>
+                                    <h2><?php echo $conta->usuarioNumIndicados ?></h2>
                                     <p>Indicados</p>
                                 </div>
 
@@ -93,7 +93,7 @@
                             <div class="card">
                                 <div class="card-block">
                                     <h5 class="card-title">Comprar Posicionamento</h5>
-                                    <input readonly class="btn btn-warning btn-large text-center" type="button" value="Aguarde o lançamento" />
+                                    <button class="btn btn-warning btn-large text-center" type="button" data-numdoacoes="1" id="abreposicao">Abrir posição</button>
                                 </div>
                             </div>
                         </div>
@@ -132,13 +132,13 @@
                                                 <td><a href="#"><?php echo $receb->doacaoCod ?></a></td>
                                                 <td><?php echo $doacao->doadorNome ?></td>
                                                 <td>
-                                                    <badge class="badge badge-warning"><?php echo $doacao->doacaoStatusN ?></badge>
+                                                    <badge class="badge badge-warning"><?php echo $doacao->doacaoStatus ?></badge>
                                                 </td>
                                                 <td>
                                                     $<?php echo $doacao->doacaoValor ?>
                                                 </td>
                                                 <td>
-                                                    $<?php echo $doacao->doacaoCronometro ?>
+                                                    <span data-countdown="<?php echo date('Y/m/d H:i:s', strtotime($doacao->doacaoCronometro) ) ?>"></span>
                                                 </td>
                                             </tr>
                                             <?php endforeach; ?>
@@ -168,18 +168,18 @@
 
                                         <tbody>
                                         <?php if(!empty($recebimentos)): ?>
-                                        <?php foreach($recebimentos as $receb): ?>
+                                        <?php foreach($recebimentos as $receb):  ?>
                                         <tr>
                                             <td><a href="#"><?php echo $receb->doacaoCod ?></a></td>
-                                            <td><?php echo $receb->doadorNome ?></td>
+                                            <td><?php echo $receb->usuarioNome ?></td>
                                             <td>
-                                                <badge class="badge badge-warning"><?php echo $receb->doacaoStatusN ?></badge>
+                                                <badge class="badge badge-warning"><?php echo $receb->doacaoStatus ?></badge>
                                             </td>
                                             <td>
                                                 $<?php echo $receb->doacaoValor ?>
                                             </td>
                                             <td>
-                                                $<?php echo $receb->doacaoCronometro ?>
+                                                <span data-countdown="<?php echo date('Y/m/d H:i:s', strtotime($receb->doacaoCronometro) ) ?>"></span>
                                             </td>
                                         </tr>
                                         <?php endforeach; ?>

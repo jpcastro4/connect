@@ -48,12 +48,14 @@
 
   <div class="container">
         <div class="row">
-
-          <div class="col-12 col-md-6 mx-auto">
+          <div class="col-12 py-3 text-center">
+                        <img width="250" class="mx-auto" src="<?php echo base_url('assets/img/logo.png') ?>" >
+                    </div>
+          <div class="col-12 col-md-4 mx-auto">
             <?php if(!empty($indicador) ) echo '<p class="alert-info alert text-center w-100">Indicado por  '. $indicador. '  -  '.$this->native_session->get('indicador').'</p>';  ?>
              
               <form id="register-form" action="finalizar" class="form" method="post" >
-                    <legend class="text-center py-4">Fazer cadastro</legend>
+                    <legend class="text-center py-4">Finalizar cadastro</legend>
                 
                     <div class="form-group">
                       <!-- first name -->

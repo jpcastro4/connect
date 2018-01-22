@@ -1,5 +1,8 @@
 <?php
-
+use Aws\Sns;
+use Aws\Sns\SnsClient;
+use Aws\AwsClientInterface;
+use Aws\AwsClientTrait;
 
 class Usuario_model extends CI_Model{
 
@@ -21,13 +24,13 @@ class Usuario_model extends CI_Model{
             return;
         }
 
+        $this->native_session->set('telefone',$usuarioTelefone);
+
         $code = (string) rand(1001,9999);
         $this->native_session->set('code',$code);
-        $this->native_session->set('telefone',$usuarioTelefone);
+       
         $send = $this->codeCadastro($code,$usuarioTelefone);
-        echo json_encode($send);
-        return;
-
+        
         if($send){
             echo json_encode( array('result'=>'success','redirect'=>base_url('valida')) );
             return;
@@ -40,81 +43,75 @@ class Usuario_model extends CI_Model{
     public function codeCadastro($cod,$phone){
 
          //envia mensagem para o celular com o codigo retornado pelo AWS SNS
+        try{
 
-        //  $client = SnsClient::factory(array(
-        //     'region' => 'us-east-1',
-        //     'version' => 'latest',
-        //     'credentials' => array(
-        //         'key'    =>  $this->config->item('aws_key'),
-        //         'secret' => $this->config->item('aws_secret')
-        //         )
-        //     ));
-        
-        //     $message = (string) $cod;
-        //     $payload = [
-        //     'TopicArn' => 'arn:aws:sns:sns:us-east-1:630580470294:connectmoney',
-        //         'Message'          => $message,
-        //         'MessageStructure' => 'string',
-        //         'MessageAttribute' => [
-        //             'AWS.SNS.SMS.SenderID' => [
-        //                 'DataType'    => 'String',
-        //                 'StringValue' => 'Sender',
-        //             ],
-        //             'AWS.SNS.SMS.SMSType'  => [
-        //                 'DataType'    => 'String',
-        //                 'StringValue' => 'Transactional',
-        //             ]
-        //         ]
-        //     ];
+            $client = SnsClient::factory(array(
+            'region' => 'us-east-1',
+            'version' => 'latest',
+            'credentials' => array(
+                'key'    =>  $this->config->item('aws_key'),
+                'secret' => $this->config->item('aws_secret')
+                )
+            ));
 
-        //     $result = $client->subscribe(array(
-        //         'TopicArn' => 'arn:aws:sns:us-east-1:630580470294:connectmoney',
-        //         'Protocol' => 'sms',
-        //         'Endpoint' => (string) '+55'.$phone,
-        //     ));
+            //Mensagem em massa para todos do topico
+ 
+            // $payload = [
+            // 'TopicArn' => 'arn:aws:sns:us-east-1:630580470294:connectmoney',
+            //     'Message'          => 'Seu codigo de validação da conta Connect Money: '.$message,
+            //     'MessageStructure' => 'string',
+            //     'MessageAttribute' => [
+            //         'AWS.SNS.SMS.SenderID' => [
+            //             'DataType'    => 'String',
+            //             'StringValue' => 'Sender',
+            //         ],
+            //         'AWS.SNS.SMS.SMSType'  => [
+            //             'DataType'    => 'String',
+            //             'StringValue' => 'Transactional',
+            //         ]
+            //     ]
+            // ];
+
+            $message = [
+                'Message' => 'Seu codigo de validação da conta Connect Money: '. $cod,
+                'MessageAttributes' => [
+                    'AWS.SNS.SMS.SenderID' => [
+                        'DataType'    => 'String',
+                        'StringValue' => 'Sender',
+                    ],
+                    'AWS.SNS.SMS.SMSType'  => [
+                        'DataType'    => 'String',
+                        'StringValue' => 'Transactional',
+                    ]
+                ],
+                'MessageStructure' => 'string',
+                'PhoneNumber' => (string) '+55'.$phone,
+                'Subject' => 'Codigo de validação',
+                // 'TargetArn' => '<string>',
+                // 'TopicArn' => '<string>',
+            ];
+
+            //Inscreve o usuario no topico
+            $result = $client->subscribe(array(
+                'TopicArn' => 'arn:aws:sns:us-east-1:630580470294:connectmoney',
+                'Protocol' => 'sms',
+                'Endpoint' => (string) '+55'.$phone,
+            ));
         
-        //  $subarn = $result['SubscriptionArn'];
-        //  $result = $client->publish($payload);
-         
+            // $subarn = $result['SubscriptionArn']; //retorno da identificação do usuario na lista
+            $client->publish($message);
+
+            return true;
+
+        }catch(AwsException $e){
+
+            return false;
+        }
+           
+        //Desinscrever         
         //  $result = $client->unsubscribe(array(
         //     'SubscriptionArn' => $subarn,
         //  ));
-
-        $username = 'jp@grupodifference.com';
-        $hash = 'Your API hash';
-
-        // Prepare data for POST request
-        $data = array('username' => $username, 'hash' => $hash);
-
-        // Send the POST request with cURL
-        $ch = curl_init('http://api.txtlocal.com/get_templates/');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        curl_close($ch);
-
-        // Process your response here
-        echo $response;
-    
-
-        return $response;
-        // $ch = curl_init('https://textbelt.com/text');
-        // $data = array(
-        //     'phone' => (string) '+55'.$phone,
-        //     'message' => (string) $cod,
-        //     'key' => '78c7949611b0b73210fa0031b2453b33fc7c38eaP8gamyNc3iOe5XZb1Xv2n0Xd1',
-        // );
-
-        // curl_setopt($ch, CURLOPT_POST, 1);
-        // curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        // $response = curl_exec($ch);
-        
-        // curl_close($ch);
-                  
-        // return $response;
     }
 
     public function validaCode(){
@@ -129,7 +126,7 @@ class Usuario_model extends CI_Model{
 
 
 
-    public function novaConta(){
+    public function concluiConta(){
 
         $usuarioEmail = $this->input->post('usuarioEmail');
         $usuarioSenha = $this->input->post('usuarioSenha');
@@ -144,7 +141,7 @@ class Usuario_model extends CI_Model{
         // $ddd = substr($celular, 0, 2);
         // $tel = substr($celular, 2, 10);
         
-        $usuarioTelefone = $this->navite_session->get('telefone');      
+        $usuarioTelefone = $this->native_session->get('telefone');      
 
         if( empty($usuarioSenha)  OR empty($this->input->post('repeteSenha')) ){
             echo json_encode( array('result'=>'error','message'=>'Campos vazios.') );
@@ -157,40 +154,28 @@ class Usuario_model extends CI_Model{
         }
 
         if($this->native_session->get('indicador')){
-
             $indicadorLogin = $this->native_session->get('indicador');
-        }else{
 
-            $indicadorLogin = 'connectmoney';
-        }
-        
-        $this->db->where('usuarioLogin', $indicadorLogin);
-        $indicador = $this->db->get('usuarios');
+            $this->db->where('usuarioLogin', $indicadorLogin);
+            $indicador = $this->db->get('usuarios');
 
-        if($indicador->num_rows() > 0){
+            if($indicador->num_rows() > 0){
 
-            if( $indicador->row()->usuarioBlock == 1){
-           
-                //$this->native_session->set_flashdata('message_error', '<div class="alert alert-danger text-center">Seu indicador está bloqueado por irregularidades.</div>');
-                echo json_encode( array('result'=>'error','message'=>'Seu indicador está bloqueado.') );
-                return;
+                if( $indicador->row()->usuarioBlock == 1){
+                    $indicadorID = null;
+
+                }elseif($indicador->row()->usuarioStatus == 0){
+                     $indicadorID = null;
+
+                }else{
+                   $indicadorID = $indicador->row()->usuarioID;
+                }                
             }
-
-            if( $indicador->row()->usuarioStatus == 0){
-           
-                //$this->native_session->set_flashdata('message_error', '<div class="alert alert-danger text-center">Seu indicador está bloqueado por irregularidades.</div>');
-                echo json_encode( array('result'=>'error','message'=>'Seu indicador não está ativo.') );
-                return;
-            }
-
-            $indicadorID = $indicador->row()->usuarioID;
 
         }else{
 
             $indicadorID = null; //especificamente para o primeiro cadastro
         }
-
-        
         
         //LOGIN JA EXISTENTE
         // $this->db->where('usuarioLogin', $usuarioLogin);
@@ -211,16 +196,6 @@ class Usuario_model extends CI_Model{
 
         if( $indicadorDados->num_rows() > 0){
 
-            if( $indicadorDados->row()->usuarioStatus == 0 ){
-
-                $array_cod = array( 'usuarioCod'=> (string) rand(1001,9999)  );
-                $this->db->where('usuarioID', $indicadorDados->row()->usuarioID);
-                $cadastra = $this->db->update('usuarios', $array_cadastro);
-
-                echo json_encode( array('result'=>'success','redirect'=>'backoffice/valida/'.$usuarioGuid) );
-                return;
-            }
-
             echo json_encode( array('result'=>'error','message'=>'Você já está cadastrado') );
             return;
         }
@@ -228,15 +203,14 @@ class Usuario_model extends CI_Model{
         $usuarioGuid = (string) uniqid();
         
         $array_cadastro = array(
+            'usuarioLogin'=>$usuarioGuid,
             'usuarioNome'=>$usuarioNome,
             //'usuarioCod'=>$cod,
             'usuarioSobrenome'=>$usuarioSobrenome,
             'usuarioEmail'=>$usuarioEmail,
             //'usuarioCpf'=>$usuarioCpf,
             //'nascimento'=>converter_data($nascimento),
-            //'ddd'=> $ddd,
             'usuarioTelefone'=>$usuarioTelefone,
-            'usuarioLogin'=>$usuarioGuid,
             'usuarioSenha'=>md5($usuarioSenha),
             'usuarioBlock'=>0,
             'usuarioStatus'=>0,
@@ -247,7 +221,7 @@ class Usuario_model extends CI_Model{
         $cadastra = $this->db->insert('usuarios', $array_cadastro);
 
         if($cadastra){
-            $this->native_session->unser_userdata('telefone');
+            $this->native_session->unset_userdata('telefone');
             $id_novo_usuario = $this->db->insert_id();
             //$this->native_session->set('usuario_id', $id_novo_usuario);
 
