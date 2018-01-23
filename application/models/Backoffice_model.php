@@ -228,7 +228,8 @@ class Backoffice_model extends CI_Model{
             $nivel = $this->countArrayDoacoes();
 
         }
-              
+         
+        $u = false;
         if( $nivel > 0 ){ //VERIRICA SE O NIVEL AINDA É MAIOR QUE 0.
             
             foreach( $this->arrayRedeDoacoes[$linha] as $user){ // OBSERVANDO AS LINHAS DA ESQUERDA PRA DIREITA
@@ -262,15 +263,20 @@ class Backoffice_model extends CI_Model{
                 // echo json_encode($user);
                 // return false;
                 // break;
-
-                return $this->abrePosicionamento($user);
+                $u .= $user;
+                //return $this->abrePosicionamento($user);
                 break;
             }
             
             return $this->RastreadorRedeDoacoes( $linha+1, $nivel-1, 0 );  
         }
-               
-        return false;
+        
+        if($u){
+            $this->abrePosicionamento($user);
+        }else{
+            return false;
+        }
+        
         
     }
 
@@ -397,7 +403,7 @@ class Backoffice_model extends CI_Model{
             echo json_encode(array('result'=>'error','message'=>'Erro ao aplicar seu posicionamento'));
             return;
         }else{
-            echo json_encode(array('result'=>'success','message'=>'Poscionamento realizado.' ));
+            echo json_encode(array('result'=>'success','message'=>'Poscionamento realizado.','redirect'=>base_url("backoffice") ));
             return;
         }
         
@@ -425,9 +431,11 @@ class Backoffice_model extends CI_Model{
         }else{
 
             if($this->RedeDoacoes()){
-                $this->RastreadorRedeDoacoes();
+                if($this->RastreadorRedeDoacoes() == false){
+                    echo json_encode(array('result'=>'error','message'=>'Aguarde posicionamentos abertos'));
+                }
                
-                //echo json_encode(array('result'=>'error','message'=>'Aguarde posicionamentos abertos'));
+                
                 
             }
             
@@ -437,7 +445,16 @@ class Backoffice_model extends CI_Model{
         // return;
     }
 
+    public function statusDoacao($status){
+        if($status == 0 ){
+            echo '<button class="btn btn-danger">Aguardando</button>';
+        }
 
+        if($status == 1){
+            echo '<button class="btn btn-danger">Comprovante enviado</button>';
+        }
+
+    }
     //////////////////////////////////////////////////////////////////////////   DOACOES
 
     public function aceitaDoacao(){

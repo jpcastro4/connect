@@ -1,3 +1,9 @@
+    var app = function(){
+
+        $('.table').DataTable({
+            responsive: true
+        });
+    }
     var formsave = function(){
 
         $('form').on('submit',function(e){
@@ -124,6 +130,7 @@
         });
     }
 
-formsave()
-abreDoacao()
-cronometro()
+    //app()
+    formsave()
+    abreDoacao()
+    cronometro()

@@ -24,6 +24,14 @@ class Usuario_model extends CI_Model{
             return;
         }
 
+        $this->db->where('usuarioTelefone',$usuarioTelefone);
+        $return = $this->db->get('usuarios');
+
+        if($return->num_rows() > 0){
+            echo json_encode( array('result'=>'error','message'=>'Já existe membro com esse número') );
+            return;
+        }
+
         $this->native_session->set('telefone',$usuarioTelefone);
 
         $code = (string) rand(1001,9999);
@@ -32,7 +40,7 @@ class Usuario_model extends CI_Model{
         $send = $this->codeCadastro($code,$usuarioTelefone);
         
         if($send){
-            echo json_encode( array('result'=>'success','redirect'=>base_url('valida')) );
+            echo json_encode( array('result'=>'success','message'=>'Vamos redirecionar você.','redirect'=>base_url('valida')) );
             return;
         }
 

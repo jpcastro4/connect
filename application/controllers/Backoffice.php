@@ -51,6 +51,7 @@ class Backoffice extends CI_Controller {
         $this->load->view('backoffice/templates/footer');     
        
     }
+    
 
     public function sair(){
 
@@ -127,6 +128,38 @@ class Backoffice extends CI_Controller {
         $this->load->view('backoffice/templates/header', $data);
         $this->load->view('backoffice/senha');
         $this->load->view('backoffice/templates/footer');
+    }
+
+    public function doacoes(){
+
+        $data['titulo'] = 'Doacoes';
+ 
+        $data['mensagem'] = $this->native_session->get_flashdata('mensagem');
+        $data['mensagem_erro'] = $this->native_session->get_flashdata('mensagem_erro');
+
+        $data['conta'] = $this->backoffice_model->conta();
+
+        $data['doacoes'] = $this->backoffice_model->doacoes();
+
+        $this->load->view('backoffice/templates/header', $data);
+        $this->load->view('backoffice/doacoes');
+        $this->load->view('backoffice/templates/footer');     
+    }
+
+    public function recebimentos(){
+
+        $data['titulo'] = 'Doacoes';
+ 
+        $data['mensagem'] = $this->native_session->get_flashdata('mensagem');
+        $data['mensagem_erro'] = $this->native_session->get_flashdata('mensagem_erro');
+
+        $data['conta'] = $this->backoffice_model->conta();
+
+        $data['recebimentos'] = $this->backoffice_model->recebimentos();
+
+        $this->load->view('backoffice/templates/header', $data);
+        $this->load->view('backoffice/recebimentos');
+        $this->load->view('backoffice/templates/footer');     
     }
 
 

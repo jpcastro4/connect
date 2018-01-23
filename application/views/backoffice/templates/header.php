@@ -33,6 +33,11 @@
     <script type="text/javascript" src="<?php echo base_url()?>assets/js/app.min.js"></script>
     
     <script> var site_url = '<?php echo base_url() ?>';</script>
+    <style>
+        tr.sub-panel{
+            display:none;
+        }
+    </style>
 </head>
 
 <body>
@@ -51,7 +56,7 @@
         </button>
 
         <a class="navbar-brand logo hidden-md-up" href="#">
-            <img src="<?php echo base_url()?>assets/img/logo.png" alt="Modish">
+            <img width="110" style="width:100px!important" src="<?php echo base_url()?>assets/img/logo-branco.png" alt="Modish">
         </a>
         
 
@@ -160,15 +165,14 @@
                           <i class="icon-menu"></i>
                       </li> -->
 
-                      <li>
+                      <!-- <li>
                           <a href="index.html"><i class="fa fa-pencil"></i> <span>Relatorios</span></a>
                           <ul>
                               <li><a href="<?php echo base_url('backoffice/doacoes') ?>">Doações Feitas</a></li>
                               <li><a href="<?php echo base_url('backoffice/recebimentos') ?>">Doações Recebidas</a></li>
                                <li><a href="<?php echo base_url('backoffice/extrato') ?>">Extrato Geral</a></li>
-                              <!--<li><a href="layout_vertical.html">Vertical Layout</a></li> -->
                           </ul>
-                      </li>
+                      </li> -->
 
                       <li>
                           <a href="index.html"><i class="fa fa-th"></i> <span>Conta</span></a>

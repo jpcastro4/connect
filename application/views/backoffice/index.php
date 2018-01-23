@@ -79,7 +79,7 @@
                     </div>
                     
                     <div class="row">
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-4 col-lg-6">
                             <div class="card">
                                 <div class="card-block">
                                     <h5 class="card-title">Link de indicação</h5>
@@ -92,29 +92,52 @@
                         <div class="col-12 col-md-3">
                             <div class="card">
                                 <div class="card-block">
-                                    <h5 class="card-title">Comprar Posicionamento</h5>
+                                    <h5 class="card-title">Posicionar</h5>
                                     <button class="btn btn-warning btn-large text-center" type="button" data-numdoacoes="1" id="abreposicao">Abrir posição</button>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-3">
+                        <div class="col-12 col-md-4 col-lg-3">
                             <div class="card">
-                                <div class="card-block">
-                                    <h5 class="card-title">Avisos</h5>
-                                    <p>Dica: cada novo posicionamento te dá direito a mais 3 doações.</p>
+                                <div class="card-block" style="height:110px;max-height:110px">
+                                    <!-- <h5 class="card-title">Avisos</h5> -->
+                                    <!-- <p>Dica: cada novo posicionamento te dá direito a mais 3 doações.</p> -->
+                                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                                    <!-- Connect Height 100 -->
+                                    <ins class="adsbygoogle"
+                                        style="display:inline-block;width:320px;height:100px"
+                                        data-ad-client="ca-pub-3215674587886121"
+                                        data-ad-slot="2727335386"></ins>
+                                    <script>
+                                    (adsbygoogle = window.adsbygoogle || []).push({});
+                                    </script>
                                 </div>
                             </div>
                         </div>
                         
-                    </div> 
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="col-12 mx-auto" style="height:110px" >
+                        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                            <!-- NOWX -->
+                            <ins class="adsbygoogle"
+                                style="display:block"
+                                data-ad-client="ca-pub-3215674587886121"
+                                data-ad-slot="7539926294"
+                                data-ad-format="auto"></ins>
+                            <script>
+                            (adsbygoogle = window.adsbygoogle || []).push({});
+                            </script>
+                        </div>                
+                    </div>
 
                     <div class="row margin-top-10">
-                        
                         <div class="col-12 col-md-6">
-                            <div class="card">
-                                <div class="card-block">
+                            <div class="card" >
+                                <div class="card-block" style="overflow:hidden">
                                     <h5 class="card-title">Pagamentos</h5>
-                                    <table class="table table-stripped table-hover">
+                                    <table class="table table-stripped table-responsive table-hover">
                                         <thead>
                                             <tr>
                                                 <td>#Cod</td>
@@ -141,6 +164,11 @@
                                                     <span data-countdown="<?php echo date('Y/m/d H:i:s', strtotime($doacao->doacaoCronometro) ) ?>"></span>
                                                 </td>
                                             </tr>
+                                            <tr class="sub-panel">
+                                                <td>
+                                                    <button class="btn btn-primary">Enviar comprovante</button>                                                    
+                                                </td>
+                                            </tr>
                                             <?php endforeach; ?>
                                         <?php else : ?>
                                              <td>Não há pagamentos</td> 
@@ -155,7 +183,7 @@
                             <div class="card">
                                 <div class="card-block">
                                     <h5 class="card-title">Recebimentos</h5>
-                                    <table class="table table-stripped table-hover">
+                                    <table class="table table-stripped table-responsive w-100 table-hover">
                                         <thead>
                                             <tr>
                                                 <td>#Cod</td>
