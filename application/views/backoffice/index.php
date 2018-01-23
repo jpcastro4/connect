@@ -93,7 +93,7 @@
                             <div class="card">
                                 <div class="card-block">
                                     <h5 class="card-title">Posicionar</h5>
-                                    <button class="btn btn-warning btn-large text-center" type="button" data-numdoacoes="1" id="abreposicao">Abrir posição</button>
+                                    <button class="btn btn-warning btn-large text-center" type="button" data-numdoacoes="1" >Aguarde liberação <i class="fa fa-spinner fa-spin"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -143,7 +143,7 @@
                                                 <td>#Cod</td>
                                                 <td>Recebedor</td>
                                                 <td>Status</td>
-                                                <td>Valor</td>
+                                                <!-- <td>Valor</td> -->
                                                 <td>Tempo</td>
                                             </tr>
                                         </thead>
@@ -152,23 +152,23 @@
                                         <?php if(!empty($doacoes)): ?>
                                             <?php foreach($doacoes as $doacao): ?>
                                             <tr>
-                                                <td><a href="#"><?php echo $doacao->doacaoCod ?></a></td>
+                                                <td><small><a href="#"><?php echo $doacao->doacaoCod ?></a></small></td>
                                                 <td><?php echo $this->backoffice_model->posicUser($doacao->posicUsuarioRecebedor)->usuarioNome; ?></td>
                                                 <td>
-                                                    <badge class="badge badge-warning"><?php echo $doacao->doacaoStatus ?></badge>
+                                                <?php $this->backoffice_model->statusDoacao($doacao->doacaoStatus) ?>
                                                 </td>
-                                                <td>
+                                                <!-- <td>
                                                     $<?php echo $doacao->doacaoValor ?>
-                                                </td>
+                                                </td> -->
+                                             
                                                 <td>
                                                     <span data-countdown="<?php echo date('Y/m/d H:i:s', strtotime($doacao->doacaoCronometro) ) ?>"></span>
                                                 </td>
-                                            </tr>
-                                            <tr class="sub-panel">
                                                 <td>
-                                                    <button class="btn btn-primary">Enviar comprovante</button>                                                    
+                                                    <button class="btn btn-small btn-primary" data-toggle="modal" data-target="#comprovante" data-doacao="<?php echo $doacao->doacaoID ?>">Enviar comprovante</button>                                                    
                                                 </td>
                                             </tr>
+                                             
                                             <?php endforeach; ?>
                                         <?php else : ?>
                                              <td>Não há pagamentos</td> 
@@ -178,6 +178,34 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="modal fade" id="comprovante">
+                            <div class="modal-dialog modal-sm" role="document">
+                                <form action="<?php echo base_url('form/comprovante') ?>" method="post" enctype="multipart/form-data">
+                                    <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Enviar comprovante</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <label class="custom-file">
+                                            <input type="file" id="file" name="comprovante" class="custom-file-input" required>
+                                            <span class="custom-file-control">Clique aqui para enviar</span>
+                                        </label>
+                                        <input name="doacaoID" type="hidden" />
+                                    
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Enviar</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+
 
                         <div class="col-12 col-md-6">
                             <div class="card">
@@ -198,16 +226,32 @@
                                         <?php if(!empty($recebimentos)): ?>
                                         <?php foreach($recebimentos as $receb): ?>
                                         <tr>
-                                            <td><a href="#"><?php echo $receb->doacaoCod ?></a></td>
+                                            <td><small><a href="<?php if($receb->doacaoStatus == 2) echo base_url('uploads/comprovantes/').$receb->doacaoComprovante ;?>" <?php if($receb->doacaoStatus == 2) echo 'download="'.$receb->doacaoComprovante.'"' ;?>  target="_blank"><?php echo $receb->doacaoCod ?></a></small></td>
                                             <td><?php echo $this->backoffice_model->posicUser($receb->posicUsuarioDoador)->usuarioNome; ?></td>
                                             <td>
-                                                <badge class="badge badge-warning"><?php echo $receb->doacaoStatus ?></badge>
+                                                <?php $this->backoffice_model->statusDoacao($receb->doacaoStatus) ?> 
                                             </td>
                                             <td>
                                                 $<?php echo $receb->doacaoValor ?>
                                             </td>
                                             <td>
                                                 <span data-countdown="<?php echo date('Y/m/d H:i:s', strtotime($receb->doacaoCronometro) ) ?>"></span>
+                                            </td>
+                                            
+                                            <td>
+                                                <?php 
+                                                if($receb->doacaoStatus == 2){
+                                                    echo '<button class="btn btn-small btn-success" id="aceitar" data-doacao="'.$receb->doacaoID .'" >Confirmar doação</button>';
+                                                }
+                                                elseif( strtotime($receb->doacaoCronometro) - strtotime("now") < 0 ){
+                                                    echo '<button class="btn btn-small btn-danger" id="retirar" data-doacao="'.$receb->doacaoID .'" >Retirar doador</button>';
+                                                }                                                
+                                                ?>
+                                            </td>
+                                        </tr>
+                                        <tr class="sub-panel" id="<?php echo $receb->doacaoCod ?>" style="display:none">
+                                            <td>
+                                                <button class="btn btn-primary">Enviar comprovante</button>                                                    
                                             </td>
                                         </tr>
                                         <?php endforeach; ?>
@@ -222,66 +266,7 @@
                         
                     </div>
 
-                    <!-- <div class="row">
-                        <div class="col-lg-4">
-                            <div class="card">
-                                <div class="card-block">
-                                    <h5 class="card-title">Recent Members</h5>
-
-                                    <ul class="recent-members">
-                                        <li>
-                                            <img src="assets/img/profile-picture.jpg" alt="">
-                                            <span class="user-name">Username</span>
-                                            <span class="joined-date">Today</span>
-                                        </li>
-
-                                        <li>
-                                            <img src="assets/img/profile-picture.jpg" alt="">
-                                            <span class="user-name">Username</span>
-                                            <span class="joined-date">Today</span>
-                                        </li>
-
-                                        <li>
-                                            <img src="assets/img/profile-picture.jpg" alt="">
-                                            <span class="user-name">Username</span>
-                                            <span class="joined-date">Today</span>
-                                        </li>
-
-                                        <li>
-                                            <img src="assets/img/profile-picture.jpg" alt="">
-                                            <span class="user-name">Username</span>
-                                            <span class="joined-date">Today</span>
-                                        </li>
-
-                                        <li>
-                                            <img src="assets/img/profile-picture.jpg" alt="">
-                                            <span class="user-name">Username</span>
-                                            <span class="joined-date">Today</span>
-                                        </li>
-
-                                        <li>
-                                            <img src="assets/img/profile-picture.jpg" alt="">
-                                            <span class="user-name">Username</span>
-                                            <span class="joined-date">Today</span>
-                                        </li>
-
-                                        <li>
-                                            <img src="assets/img/profile-picture.jpg" alt="">
-                                            <span class="user-name">Username</span>
-                                            <span class="joined-date">Today</span>
-                                        </li>
-
-                                        <li>
-                                            <img src="assets/img/profile-picture.jpg" alt="">
-                                            <span class="user-name">Username</span>
-                                            <span class="joined-date">Today</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </div> -->
+                     
                 </div>
             </div>
             <!-- /PAGE CONTENT -->

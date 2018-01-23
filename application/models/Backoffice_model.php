@@ -71,9 +71,14 @@ class Backoffice_model extends CI_Model{
     }
     //////////////////////////////////////////////////////////////////////////////////////   VIEWS
    	
-   	public function conta(){
+   	public function conta($usuarioID=false){
 
-        $sessao = $this->native_session->get('usuario_id');
+        if($usuarioID==false){
+            $sessao = $this->native_session->get('usuario_id');
+        }else{
+            $sessao = $usuarioID;
+        }
+        
 
         $this->db->where('usuarioID', $sessao);
         $user = $this->db->get('usuarios');
@@ -107,7 +112,7 @@ class Backoffice_model extends CI_Model{
         $this->db->where('u.usuarioID',$sessao);
 
         if($fStatus == true ){
-            $this->db->where('d.doacaoStatus',0);  
+            $this->db->where('d.doacaoStatus <=', 1); 
         }
         
         $recebimentos = $this->db->get();
@@ -131,7 +136,7 @@ class Backoffice_model extends CI_Model{
         $this->db->where('u.usuarioID',$sessao);
 
         if($fStatus == true ){
-            $this->db->where('d.doacaoStatus',0);  
+            $this->db->where('d.doacaoStatus <=', 1);
         }
         
         $doador = $this->db->get();
@@ -234,7 +239,6 @@ class Backoffice_model extends CI_Model{
             
             foreach( $this->arrayRedeDoacoes[$linha] as $user){ // OBSERVANDO AS LINHAS DA ESQUERDA PRA DIREITA
                 
-                
                 /*
                 - Verificar quantas doações estão sendo solicitadas
                 - Processa a fila com todos os posicionados 
@@ -250,7 +254,7 @@ class Backoffice_model extends CI_Model{
                 if($user->usuarioStatus == 0) continue; // se a conta não está ativa
                  
 
-                if($user->posicStatus == 1) continue;  // se o posicionamento já está concluido
+                //if($user->posicStatus == 1) continue;  // se o posicionamento já está concluido ainda não fiz
 
                 if($user->redeTipo == 2 ) continue; // se é uma reentrada           
  
@@ -275,9 +279,7 @@ class Backoffice_model extends CI_Model{
             $this->abrePosicionamento($user);
         }else{
             return false;
-        }
-        
-        
+        }        
     }
 
     private function verificaPropagacaoLateral($posicRecebedorID){
@@ -409,65 +411,271 @@ class Backoffice_model extends CI_Model{
         
     }
 
-    // Start posicionamentos
-    public function processarPosicionamento(){
- 
-        if(empty($this->input->post('numDoacoes'))){
-            echo json_encode(array('result'=>'error','message'=>'Escolha a quantidade de doações'));
-            return;
+    private function numPosicionamentos($usuarioID){
+        $this->db->where('usuarioID',$usuarioID);
+        $return = $this->db->get('usuarios_posicoes');
+
+        return $return->num_rows();
+
+    }
+
+    public function nivel($nivel){
+        
+        switch ($nivel) {
+            case 1:
+                return 2;
+                break;
+            case 2:
+                return 4;
+                break;
+            case 3:
+                return 8;
+                break;
+            case 4:
+                return 16;
+                break;
+            default:
+                return 1;
+                break;
         }
         
+    }
+
+    // Start posicionamentos
+    public function processarPosicionamento(){
         $numDoacoes = $this->input->post('numDoacoes');
 
-        if( $numDoacoes > 1 ){
+        if(empty($numDoacoes)){
+            echo json_encode(array('result'=>'error','message'=>'Escolha a quantidade de doações'));
+            return;
 
-            // $a = $numDoacoes;
-            // while ($numDoacoes <= $a ) {
-                
-            //     $this->RedeDoacoes();
-            //     $this->RastreadorRedeDoacoes();
-            // }
+        }
+        
+        $usuario = $this->conta();
 
-        }else{
+        $numPosicPerm = $this->nivel($usuario->usuarioNivel);
 
-            if($this->RedeDoacoes()){
-                if($this->RastreadorRedeDoacoes() == false){
-                    echo json_encode(array('result'=>'error','message'=>'Aguarde posicionamentos abertos'));
-                }
-               
-                
-                
-            }
-            
+        $numPosic = $this->numPosicionamentos($usuario->usuarioID);
+
+        if($numPosic > $numPosicPerm ){
+            echo json_encode(array('result'=>'error','message'=>'Você alcançou o número de posições. Suba de nível.'));
+            return;
+
         }
 
-        // echo json_encode(array('result'=>'success','message'=>$message ));
-        // return;
+        if($this->RedeDoacoes()){
+
+            if($this->RastreadorRedeDoacoes() === false){
+                echo json_encode(array('result'=>'error','message'=>'Aguarde posicionamentos abertos'));
+
+            }                
+        }
     }
 
     public function statusDoacao($status){
         if($status == 0 ){
-            echo '<button class="btn btn-danger">Aguardando</button>';
+            echo '<badge class="badge badge-warning">Aguardando</badge>';
         }
 
         if($status == 1){
-            echo '<button class="btn btn-danger">Comprovante enviado</button>';
+            echo '<badge class="badge badge-danger">Comprovante enviado</badge>';
         }
 
     }
+
+    
     //////////////////////////////////////////////////////////////////////////   DOACOES
+    public function enviarComprovante(){
+
+        $this->load->library('upload');
+
+        $doacaoID = $this->input->post('doacaoID');
+
+        $config['allowed_types'] = 'bmp|jpg|jpeg|pjpeg|png|gif|doc|pdf';
+        $config['upload_path'] = './uploads/comprovantes/';
+        $config['encrypt_name'] = true;
+
+        $this->upload->initialize($config);
+
+        if($this->upload->do_upload('comprovante')){
+
+            $retornoUpload = $this->upload->data();
+
+            $this->db->where('doacaoID', $doacaoID);
+            $doacoes = $this->db->get('doacoes');
+
+            $qr = false;
+            $mensagem = '';
+
+            if( $doacoes->num_rows() > 0 ){
+
+                $img = $doacoes->row();
+
+                if( $img->doacaoComprovante != NULL ){
+
+                    $path_to_file = './uploads/comprovantes/'.$img->doacaoComprovante;
+                    unlink($path_to_file);
+
+                    $this->db->where('doacaoID', $doacaoID);
+                    $qr = $this->db->update('doacoes',
+                        array(
+                            'doacaoStatus'=>'1',
+                            'doacaoDtEnvio'=> date('Y-m-d H:i:s'),
+                            'doacaoComprovante'=>$retornoUpload['file_name'])
+                        );
+                    
+                    echo json_encode(array('return'=>'success','message'=>'Comprovante reenviado'));
+                    return;
+                }
+                else{
+
+                    $this->db->where('doacaoID', $doacaoID);
+                    $qr = $this->db->update('doacoes',
+                        array(
+                            'doacaoStatus'=>'1',
+                            'doacaoDtEnvio'=> date('Y-m-d H:i:s'),
+                            'doacaoComprovante'=>$retornoUpload['file_name'])
+                        );
+                    echo json_encode(array('return'=>'error','message'=>'Comprovante enviado'));
+                    return;                   
+                }
+            }
+ 
+        }
+
+        echo json_encode(array('return'=>'error','message'=>'Erro: '.$this->upload->display_errors() ));
+        return;     
+
+    }
 
     public function aceitaDoacao(){
         
+        $doacaoID = $this->input->post('doacaoID');
+        $this->db->where('doacaoID',$doacaoID);
+        $doacao = $this->db->get('doacao')->row();
+        
+        $posicDoadorID = $doacao->doacaoUsuarioDoador;
+        $posicRecebedorID = $doacao->doacaoUsuarioRecebedor;
 
+        //traz os dados da conta mae
+        $doador = $this->posicUser($posicDoadorID);
+        $recebedor = $this->posicUser($posicRecebedorID);
+
+        $this->db->trans_start();
+            //fechando a doacao
+            $this->db->where('doacaoID',$doacaoID);
+            $doacao = $this->db->update('doacao', array('doacaoStatus'=>2));
+
+            //fechando o usuario doador e verificando upgrade
+            $arrayDoador = array(
+                'usuarioSaldoRecebido'=>$doador->usuarioSaldoDoado + 50,
+                'usuarioNumDoacoes'=>$doador->usuarioNumDoacoes  + 1
+            );
+            if($doacao->doacaoTipo == 2){
+                $arrayDoador['usuarioNumReentradas'] = $doador->usuarioNumReentradas+1;
+            }
+            if($doador->usuarioNivel == 0)  {
+                $arrayDoador['usuarioStatus'] = 1;
+
+                //se alguem o inidcou pontua pela ativação
+                if($doador->usuarioIndicador){
+                    $indicador = $this->conta($doador->usuarioIndicador);
+                    
+                    //se o indicador não está bloqueado ou sem ativar
+                    if($indicador->usuarioBlock == 0 OR $indicador->usuarioStatus == 1 ){
+                        $this->db->where('usuarioID',$doador->usuarioIndicador);
+                        $this->db->update('usuarios', array(
+                            'usuarioNumIndicados'=>$indicador->usuarioNumIndicados+1
+                        ));                     
+                        $this->upgradeNivel($indicador,'indicacao');
+                    }    
+                }
+
+            }
+            $this->db->where('usuarioID',$doador->usuarioID);
+            $this->db->update('usuarios', $arrayDoador );
+
+            if($doacao->doacaoTipo == 2){
+                 
+                $this->upgradeNivel($doador,'reentrada');
+            }
+
+            $this->upgradeNivel($doador,'doacao');
+            
+
+            //fechando o usuario recebedor e verificando upgrade
+            $arrayRecebedor = array(
+                'usuarioSaldoRecebido'=>$recebedor->usuarioSaldoRecebido + 50,
+                'usuarioNumRecebidas'=>$recebedor->usuarioNumRecebidas + 1
+            );
+            
+            $this->db->where('usuarioID',$recebedor->usuarioID);
+            $this->db->update('usuarios', $arrayRecebedor);
+
+            $this->upgradeNivel($recebedor,'recebida');
+
+            //fechando o vinculo entre posicoes
+            $this->db->where(array('posicID'=>$posicRecebedorID,'posicDoadorID'=>$posicDoadorID));
+            $this->db->update('doacoes_rede', array('redeStatus'=>1));
+
+            //definindo doacao com status 1 se o posicionamento já tem 3 doacoes concluidas
+            //////////////////// (aqui o objetivo é reduzir consultas desencessárias no lopping de rastreamento da rede)
+
+        $this->db->trans_complete();
+    
+        if ($this->db->trans_status() === FALSE){
+            echo json_encode(array('result'=>'error','message'=>'Erro ao aplicar doacao. Procure o suporte'));
+            return;
+        }else{
+            echo json_encode(array('result'=>'success','message'=>'Doacão aceita.','redirect'=>base_url("backoffice") ));
+            return;
+        }
+    }
+
+
+    private function upgradeNivel($usuario,$atitude){
+        //consultando novamente para trazer as ultimas modificações
+
+        switch ($atitude) {
+            case 'doacao':
+                $a = $usuario->usuarioNumDoacoes;
+                    break;
+            case 'recebida':
+                $a = $usuario->usuarioNumRecebidas;
+                    break;
+            case 'reentrada':
+                $a = $usuario->usuarioNumReentradas;
+                    break;
+            case 'indicacao':
+                $a = $usuario->usuarioNumIndicacoes;
+                    break;
+            default:
+                 
+                break;
+        }
+        
+        //apresenta nivel 0 fora para carregar por herança
+        
+        if(strlen($a) >= 2 ){
+            
+            $s = str_split($a);
+
+            if(end($s) === 0 ){
+
+                $novoNivel = $usuario->usuarioNivel +1;
+
+                $this->db->where('usuario',$usarioID);
+                $this->db->update('usuarios', array('usuarioNivel'=>$novoNivel));
+            }
+        }
         
     }
 
 
+    public function processaReentrada($usuarioID){
 
 
-
-
+    }
 
 
 

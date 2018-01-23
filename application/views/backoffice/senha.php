@@ -6,7 +6,7 @@
                                 <div class="card-block">
                                     <h5 class="card-title">Senha</h5>
 
-                                    <form action="senha" method="post" >
+                                    <form  class="form" action="senha" method="post" >
                                         <div class="form-group">
                                             <input class="form-control" placeholder="Senha" type="password" name="usuarioSenha" required />
                                         </div>

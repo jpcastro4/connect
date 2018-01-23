@@ -49,7 +49,7 @@
       <div class="row">
         <div class="" >
         <div class="logo text-center"><img src="<?php echo base_url() ?>assets/bo/logo-colorida.png" ></div>
-        <form action="" method="post" >
+        <form  class="form" action="esqueci" method="post" >
           <!-- Forms
           ================================================== -->
           <?php if(isset($mensagem)) echo $mensagem; ?>

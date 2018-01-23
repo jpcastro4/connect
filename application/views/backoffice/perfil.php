@@ -6,7 +6,7 @@
                                 <div class="card-block">
                                     <h5 class="card-title">Perfil</h5>
 
-                                    <form action="perfil" method="post" >
+                                    <form class="form" action="perfil" method="post" >
                                         <div class="form-group">
                                             <input class="form-control" placeholder="Nome" type="text" name="usuarioNome" value="<?php echo $conta->usuarioNome ?>" required />
                                         </div>

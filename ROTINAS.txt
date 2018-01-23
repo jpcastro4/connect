@@ -21,7 +21,7 @@ Lista de doacõea receber com cronometro
 --
 
 Tarefa cron 
-- De minuto em minuto pra ver doa��es cairam e removendo doadores
+ 
 - Todo dia 15 processando reentradas
 -- abre posicionamento tipo 2 (reentrada) de doações em todos os ativos definindo para quem devem doar.
 
@@ -40,19 +40,28 @@ Ao abrir posicionamento
 
 
 Ao concluir a doação
+
+usuario_posicao
+- definir posicionamento do recebedor posicStatus 1
+
+
 doacao
 - definir doacaoStatus 1
-- definir doacao_rede redeStatus 1
-- definir posicionamento do doador posicStatus 1
 
-recebedor
+doacao_rede
+- definir recebedor redeStatus 1
+
+
+
+usuario recebedor
 - pontuar recebedor pelo recebimento / numRecebimentos
 - somar saldo recebido do recebedor 
-- pontuar recebedor pela reentrada (se a doacao é uma reentrada) / numReentradas
+
 - verificar as atitudes do recebedor e definir upgrade de nivel 
 
-doador
+usuario doador
 - pontuar quantidade de doações / numDoacoes
+- pontuar recebedor pela reentrada (se a doacao é uma reentrada) / numReentradas
 - somar saldo doado do doador
 - verificar as atitudes do doador e definir upgrade de nivel
 

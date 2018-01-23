@@ -73,6 +73,10 @@ class Form extends CI_Controller {
         $this->backoffice->processarPosicionamento();
     }
 
+    public function comprovante(){
+        $this->backoffice->enviarComprovante();
+    }
+
     //ADMINISTRATIVO 
 
     public function pacote($pacoteID=null){

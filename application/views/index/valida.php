@@ -44,7 +44,7 @@
                           <div class="card-block text-center">
                             <img width="250" class="mx-auto" src="<?php echo base_url('assets/img/logo.png') ?>" >      
                                          
-                              <form id="register-form" action="valida" class="form" method="post" >
+                              <form class="form" id="register-form" action="valida" class="form" method="post" >
                                   <p class="alert alert-info text-center"><i>Insira o código recebido por SMS no seu celular, para validar e continuar seu cadastro.</i></p>
                                   <div class="form-group">
                                     <div class="input-group">

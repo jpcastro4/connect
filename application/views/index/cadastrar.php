@@ -57,7 +57,7 @@
                 <img width="250" class="mx-auto" src="<?php echo base_url('assets/img/logo.png') ?>" >
                 
                 <h4 class="text-light py-4">Iniciar cadastro </h4>
-                <form id="register-form" action="cadastrar" class="form" method="post" >
+                <form  class="form" id="register-form" action="cadastrar" class="form" method="post" >
                    <?php if(!empty($indicador) ) echo '<p class="alert-info alert text-center w-100">Indicado por  '. $indicador. '  -  '.$this->native_session->get('indicador').'</p>';  ?>
                     <div class="form-group">
                       <div class="input-group">

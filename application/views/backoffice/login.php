@@ -59,7 +59,7 @@
 
                             <h4 class="text-light">Login</h4>
 
-                            <form action="login" method="post">
+                            <form class="form" action="login" method="post">
 
                             <div class="user-details">
                                 <div class="form-group">

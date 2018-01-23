@@ -452,7 +452,6 @@ class Usuario_model extends CI_Model{
                 echo json_encode(array('result'=>'success','message'=>'Banco inserido'));
                 return;
             }
-
         }
     }
  

@@ -34,8 +34,12 @@
     
     <script> var site_url = '<?php echo base_url() ?>';</script>
     <style>
-        tr.sub-panel{
-            display:none;
+        .btn-small{
+            padding:5px 8px;
+            font-size:11px;
+        }
+        .dropdown-item input{
+            font-size:11px;
         }
     </style>
 </head>

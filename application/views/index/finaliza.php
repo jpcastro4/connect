@@ -54,7 +54,7 @@
           <div class="col-12 col-md-4 mx-auto">
             <?php if(!empty($indicador) ) echo '<p class="alert-info alert text-center w-100">Indicado por  '. $indicador. '  -  '.$this->native_session->get('indicador').'</p>';  ?>
              
-              <form id="register-form" action="finalizar" class="form" method="post" >
+              <form  class="form" id="register-form" action="finalizar" class="form" method="post" >
                     <legend class="text-center py-4">Finalizar cadastro</legend>
                 
                     <div class="form-group">
