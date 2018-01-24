@@ -154,10 +154,10 @@
 
                                         <tbody>
                                         <?php if(!empty($doacoes)): ?>
-                                            <?php foreach($doacoes as $doacao): ?>
+                                            <?php foreach($doacoes as $doacao): dump($doacao)?>
                                             <tr>
                                                 <td><small><a href="#"><?php echo $doacao->doacaoCod ?></a></small></td>
-                                                <td><?php echo $this->backoffice_model->posicUser($doacao->posicUsuarioRecebedor)->usuarioNome; ?></td>
+                                                <td><?php echo $this->backoffice_model->posicUser($doacao->doacaoPosicRecebedor)->usuarioNome; ?></td>
                                                 <td>
                                                 <?php $this->backoffice_model->statusDoacao($doacao->doacaoStatus) ?>
                                                 </td>
@@ -221,7 +221,7 @@
                                                 <td>#Cod</td>
                                                 <td>Doador</td>
                                                 <td>Status</td>
-                                                <td>Valor</td>
+                                                <!-- <td>Valor</td> -->
                                                 <td>Tempo</td>
                                             </tr>
                                         </thead>
@@ -231,13 +231,13 @@
                                         <?php foreach($recebimentos as $receb): ?>
                                         <tr>
                                             <td><small><a href="<?php if($receb->doacaoStatus == 1) echo base_url('uploads/comprovantes/').$receb->doacaoComprovante ;?>" <?php if($receb->doacaoStatus == 1) echo 'download="'.$receb->doacaoComprovante.'"' ;?>  target="_blank"><?php echo $receb->doacaoCod ?></a></small></td>
-                                            <td><?php echo $this->backoffice_model->posicUser($receb->posicUsuarioDoador)->usuarioNome; ?></td>
+                                            <td><?php echo $this->backoffice_model->posicUser($receb->doacaoPosicDoador)->usuarioNome; ?></td>
                                             <td>
                                                 <?php $this->backoffice_model->statusDoacao($receb->doacaoStatus) ?> 
                                             </td>
-                                            <td>
+                                            <!-- <td>
                                                 $<?php echo $receb->doacaoValor ?>
-                                            </td>
+                                            </td> -->
                                             <td>
                                                 <span data-countdown="<?php echo date('Y/m/d H:i:s', strtotime($receb->doacaoCronometro) ) ?>"></span>
                                             </td>
@@ -248,7 +248,7 @@
                                                     echo '<button class="btn btn-small btn-success" id="aceitar" data-doacao="'.$receb->doacaoID .'" >Confirmar doação</button>';
                                                 }
                                                 elseif( strtotime($receb->doacaoCronometro) - strtotime("now") < 0 AND $receb->doacaoStatus == 0 ){
-                                                    echo '<button class="btn btn-small btn-danger" id="retirar" data-doacao="'.$receb->doacaoID .'" >Retirar doador</button>';
+                                                    echo '<button class="btn btn-small btn-danger" id="rejeitar" data-doacao="'.$receb->doacaoID .'" >Retirar doador</button>';
                                                 }                                                
                                                 ?>
                                             </td>

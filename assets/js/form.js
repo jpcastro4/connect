@@ -163,10 +163,10 @@
 
     var retirar = function(){
 
-        $("#retirar").on('click', function(e){
+        $("#rejeitar").on('click', function(e){
             e.preventDefault()
 
-            var r = confirm('Tem certeza que deseja retirar o doador? (Essa ação irá retirar a doação e bloquear o doador)')
+            var r = confirm('Tem certeza que deseja retirar o doador? (Essa ação é irreverssível. Ela retira a doação e bloqueia o doador.)')
 
             var $this = $(this),
                 doacaoID = $this.data('doacao'),
@@ -175,10 +175,8 @@
             $this.html('<i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>')
 
             if(r == true){
-                $this.html(btnContent)
-                return
-
-                $.post(site_url+'form/retirar', {doacaoID: doacaoID}, function(data){
+                
+                $.post(site_url+'form/rejeitar', {doacaoID: doacaoID}, function(data){
 
                     if(data.result == 'success'){
                         if(data.message){

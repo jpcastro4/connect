@@ -82,7 +82,7 @@ class Form extends CI_Controller {
     }
 
     public function rejeitar(){
-        $this->backoffice->rejeitarDoacao();
+        $this->backoffice->rejeitaDoacao();
     }
 
     //ADMINISTRATIVO 
