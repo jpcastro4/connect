@@ -28,7 +28,20 @@ Tarefa cron
 Fazer o primeiro cadastro e executar a geneses 
  
 --
+Criterios de cadastro
 
+Primeiro celular
+valida o celular
+se já existe alguem cadastrado pede outro
+Pede o codigo de validação
+
+guarda o numero na cache
+
+completa o cadastro
+
+e permite indicação mesmo sem estar ativo pois o link precisa funcionar normalmente
+
+--
 Ao abrir posicionamento
 - Verificar quantas doações estão sendo solicitadas
 - Processa a fila com todos os posicionados 

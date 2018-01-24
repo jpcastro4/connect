@@ -93,7 +93,7 @@
                             <div class="card">
                                 <div class="card-block">
                                     <h5 class="card-title">Posicionar</h5>
-                                    <button class="btn btn-warning btn-large text-center" type="button" data-numdoacoes="1" >Aguarde liberação <i class="fa fa-spinner fa-spin"></i></button>
+                                    <button class="btn btn-warning btn-large text-center" type="button" data-numdoacoes="1" id="posicionar">Aguarde liberação <i class="fa fa-spinner fa-spin"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -226,7 +226,7 @@
                                         <?php if(!empty($recebimentos)): ?>
                                         <?php foreach($recebimentos as $receb): ?>
                                         <tr>
-                                            <td><small><a href="<?php if($receb->doacaoStatus == 2) echo base_url('uploads/comprovantes/').$receb->doacaoComprovante ;?>" <?php if($receb->doacaoStatus == 2) echo 'download="'.$receb->doacaoComprovante.'"' ;?>  target="_blank"><?php echo $receb->doacaoCod ?></a></small></td>
+                                            <td><small><a href="<?php if($receb->doacaoStatus == 1) echo base_url('uploads/comprovantes/').$receb->doacaoComprovante ;?>" <?php if($receb->doacaoStatus == 1) echo 'download="'.$receb->doacaoComprovante.'"' ;?>  target="_blank"><?php echo $receb->doacaoCod ?></a></small></td>
                                             <td><?php echo $this->backoffice_model->posicUser($receb->posicUsuarioDoador)->usuarioNome; ?></td>
                                             <td>
                                                 <?php $this->backoffice_model->statusDoacao($receb->doacaoStatus) ?> 
@@ -240,10 +240,10 @@
                                             
                                             <td>
                                                 <?php 
-                                                if($receb->doacaoStatus == 2){
+                                                if($receb->doacaoStatus == 1){
                                                     echo '<button class="btn btn-small btn-success" id="aceitar" data-doacao="'.$receb->doacaoID .'" >Confirmar doação</button>';
                                                 }
-                                                elseif( strtotime($receb->doacaoCronometro) - strtotime("now") < 0 ){
+                                                elseif( strtotime($receb->doacaoCronometro) - strtotime("now") < 0 AND $receb->doacaoStatus == 0 ){
                                                     echo '<button class="btn btn-small btn-danger" id="retirar" data-doacao="'.$receb->doacaoID .'" >Retirar doador</button>';
                                                 }                                                
                                                 ?>

@@ -169,15 +169,15 @@ class Usuario_model extends CI_Model{
 
             if($indicador->num_rows() > 0){
 
-                if( $indicador->row()->usuarioBlock == 1){
-                    $indicadorID = null;
+                // if( $indicador->row()->usuarioBlock == 1){
+                //     $indicadorID = null;
 
-                }elseif($indicador->row()->usuarioStatus == 0){
-                     $indicadorID = null;
+                // }elseif($indicador->row()->usuarioStatus == 0){
+                //      $indicadorID = null;
 
-                }else{
+                // }else{
                    $indicadorID = $indicador->row()->usuarioID;
-                }                
+                // }                
             }
 
         }else{

@@ -77,6 +77,14 @@ class Form extends CI_Controller {
         $this->backoffice->enviarComprovante();
     }
 
+    public function aceitar(){
+        $this->backoffice->aceitaDoacao();
+    }
+
+    public function rejeitar(){
+        $this->backoffice->rejeitarDoacao();
+    }
+
     //ADMINISTRATIVO 
 
     public function pacote($pacoteID=null){

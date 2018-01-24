@@ -260,14 +260,14 @@ class Backoffice_model extends CI_Model{
  
                 //verifica a quantidade de indicados
                 $downlines = $this->downlines($user->posicID);
-                $user->posicNumDownlines = count($downlines);
-                $user->posicDownlines = $downlines;
+                $user->posicNumDownlines = count($downlines); //add indice
+                $user->posicDownlines = $downlines; //add indice
 
                 if($user->posicNumDownlines == 3) continue;  // se ja tem a quantidade de indicados               
                 // echo json_encode($user);
                 // return false;
                 // break;
-                $u .= $user;
+                $u = $user;
                 //return $this->abrePosicionamento($user);
                 break;
             }
@@ -549,26 +549,37 @@ class Backoffice_model extends CI_Model{
     }
 
     public function aceitaDoacao(){
+
+        if(empty($this->native_session->get('usuario_id'))){
+            echo json_encode(array('result'=>'error','message'=>'Erro. Procure o suporte.'));
+            return;
+        }
         
         $doacaoID = $this->input->post('doacaoID');
-        $this->db->where('doacaoID',$doacaoID);
-        $doacao = $this->db->get('doacao')->row();
-        
-        $posicDoadorID = $doacao->doacaoUsuarioDoador;
-        $posicRecebedorID = $doacao->doacaoUsuarioRecebedor;
 
-        //traz os dados da conta mae
-        $doador = $this->posicUser($posicDoadorID);
-        $recebedor = $this->posicUser($posicRecebedorID);
+        $this->db->where('doacaoID',$doacaoID);
+        $doacao = $this->db->get('doacoes')->row();
+        
+        $posicDoadorID = $doacao->posicUsuarioDoador;
+        $posicRecebedorID = $doacao->posicUsuarioRecebedor;
 
         $this->db->trans_start();
+            //traz os dados da conta mae
+            $doador = $this->posicUser($posicDoadorID);
+            $recebedor = $this->posicUser($posicRecebedorID);
+           
             //fechando a doacao
             $this->db->where('doacaoID',$doacaoID);
-            $doacao = $this->db->update('doacao', array('doacaoStatus'=>2));
+            $this->db->update('doacoes', 
+                array(
+                    'doacaoStatus'=>2,
+                    'doacaoDtFechamento'=>date('Y-m-d H:i:s')
+                )
+            );       
 
             //fechando o usuario doador e verificando upgrade
             $arrayDoador = array(
-                'usuarioSaldoRecebido'=>$doador->usuarioSaldoDoado + 50,
+                'usuarioSaldoDoado'=>$doador->usuarioSaldoDoado + 50,
                 'usuarioNumDoacoes'=>$doador->usuarioNumDoacoes  + 1
             );
             if($doacao->doacaoTipo == 2){
@@ -669,6 +680,11 @@ class Backoffice_model extends CI_Model{
             }
         }
         
+    }
+
+    public function rejeitaDownline(){
+
+        $doacaoID = $this->input->post('doacaoID');
     }
 
 

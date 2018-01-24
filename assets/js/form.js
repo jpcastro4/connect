@@ -82,7 +82,7 @@
 
     var abreDoacao = function(){
 
-        $('#abreposicao').on('click', function(){
+        $('#posicionar').on('click', function(){
             var $this = $(this),
                 btnContent = $(this).html()
 
@@ -190,7 +190,7 @@
                     }
 
                     $this.html(btnContent)
-                })
+                },'json')
                 .fail(function (e) {
                     $this.html(btnContent)
                     console.log(e.responseText )
@@ -221,6 +221,8 @@
 
                 $.post(site_url+'form/aceitar', {doacaoID: doacaoID}, function(data){
 
+                    console.log(data)
+
                     if(data.result == 'success'){
                         if(data.message){
                             alert(data.message)
@@ -235,7 +237,7 @@
                     }
 
                     $this.html(btnContent)
-                })
+                },'json')
                 .fail(function (e) {
                     $this.html(btnContent)
                     console.log(e.responseText )
