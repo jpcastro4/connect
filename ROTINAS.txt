@@ -83,3 +83,39 @@ se pela primeira vez ( a primeira doação pode ser indetificada pelo nivel 0 )
     indicador do doador
     - pontuar o indicador pela indicação do doador / numIndicadoes
     - verificar as atitudes do indicador e definir upgrade
+
+
+
+ROTINAS QUE FALTAM
+
+---
+
+Excluir doador que não doou
+
+Bloquear conta mae
+Excluir doação
+Excluir posicionamento do doador
+Excluir vinculo de rede 
+
+---
+
+Abrir dados do doador e do recebedor abaixo da doação
+
+---
+
+Esqueci a senha
+
+---
+
+
+Repociosionamento do bloqueado
+
+Abre posicionamento para o bloqueado
+Posicao temporaria tipo 3 
+Criar vinculo de rede tipo 3
+Doação temporaria tipo 3
+
+Aceitar doacação do tipo temporaria 
+Exclui logo em seguida a posicão a doação e o vinculo de rede
+
+Lembrar de acrescentar no rastreador pra ele pular o posicinamento de usuario tipo 3 temporario

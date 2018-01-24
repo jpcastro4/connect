@@ -163,6 +163,23 @@ class Backoffice extends CI_Controller {
     }
 
 
+    public function bloqueado(){
+
+        $data['titulo'] = 'Bloqueado';
+ 
+        $data['mensagem'] = $this->native_session->get_flashdata('mensagem');
+        $data['mensagem_erro'] = $this->native_session->get_flashdata('mensagem_erro');
+
+        $data['conta'] = $this->backoffice_model->conta();
+
+        $data['recebimentos'] = $this->backoffice_model->recebimentos();
+
+        $this->load->view('backoffice/templates/header', $data);
+        $this->load->view('backoffice/bloqueado');
+        $this->load->view('backoffice/templates/footer');     
+    }
+
+
     public function rede(){
 
         $data['titulo'] = 'Rede';

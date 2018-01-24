@@ -166,7 +166,7 @@ class Backoffice_model extends CI_Model{
 
     public $arrayRedeDoacoes = array();
 
-    public function RedeDoacoes($posicID = 1, $linha = 1){ 
+    public function RedeDoacoes($posicID = 1, $linha = 1){
 
         //INDICA O USUARIO MATRIZ
         $this->db->select('*');
@@ -448,10 +448,14 @@ class Backoffice_model extends CI_Model{
         if(empty($numDoacoes)){
             echo json_encode(array('result'=>'error','message'=>'Escolha a quantidade de doações'));
             return;
-
         }
         
         $usuario = $this->conta();
+
+        if($usuario->usuarioBlock == 1){
+            echo json_encode(array('result'=>'error','message'=>'Você está bloqueado'));
+            return;
+        }
 
         $numPosicPerm = $this->nivel($usuario->usuarioNivel);
 
@@ -523,8 +527,10 @@ class Backoffice_model extends CI_Model{
                             'doacaoDtEnvio'=> date('Y-m-d H:i:s'),
                             'doacaoComprovante'=>$retornoUpload['file_name'])
                         );
-                    
-                    echo json_encode(array('return'=>'success','message'=>'Comprovante reenviado'));
+
+                    //echo json_encode(array('return'=>'success','message'=>'Comprovante reenviado'));
+                    $this->native_session->set_flashdata('message','Comprovante reenviado');
+                    redirect('backoffice');
                     return;
                 }
                 else{
@@ -536,14 +542,18 @@ class Backoffice_model extends CI_Model{
                             'doacaoDtEnvio'=> date('Y-m-d H:i:s'),
                             'doacaoComprovante'=>$retornoUpload['file_name'])
                         );
-                    echo json_encode(array('return'=>'error','message'=>'Comprovante enviado'));
+                    //echo json_encode(array('return'=>'error','message'=>'Comprovante enviado'));
+                    $this->native_session->set_flashdata('message','Comprovante enviado');
+                    redirect('backoffice');
                     return;                   
                 }
             }
  
         }
 
-        echo json_encode(array('return'=>'error','message'=>'Erro: '.$this->upload->display_errors() ));
+        //echo json_encode(array('return'=>'error','message'=>'Erro: '.$this->upload->display_errors() ));
+        $this->native_session->set_flashdata('message_error','Erro: '.strip_tags($this->upload->display_errors()) );
+        redirect('backoffice');
         return;     
 
     }
@@ -685,6 +695,14 @@ class Backoffice_model extends CI_Model{
     public function rejeitaDownline(){
 
         $doacaoID = $this->input->post('doacaoID');
+
+        //bloqueando a conta mae
+
+        //excluindo o vinculo de rede
+
+        //excluindo o posicionamento
+
+        //exlcuindo a doacao
     }
 
 

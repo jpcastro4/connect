@@ -4,6 +4,10 @@
             <div class="content-wrapper">
                 <div class="content">
                     <div class="row">
+                        <?php if($this->native_session->get_flashdata('message')) echo '<p class="alert alert-success text-center w-100">'. $this->native_session->get_flashdata('message').'</p>' ?>
+                        <?php if($this->native_session->get_flashdata('message_error')) echo '<p class="alert alert-danger text-center w-100">'. $this->native_session->get_flashdata('message_error').'</p>' ?>
+                    </div>
+                    <div class="row">
                         <div class="col-md-12">
                             <h3 class="page-title">Dashboard <small>Control Panel</small></h3>
                         </div>

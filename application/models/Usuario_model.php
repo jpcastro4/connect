@@ -226,6 +226,22 @@ class Usuario_model extends CI_Model{
             'usuarioIndicador'=>$indicadorID,
         );
 
+        switch ($usuarioTelefone) {
+            case '62982752049':
+                $array_cadastro['usuarioLider'] = 1;
+                break;
+            case '62993486717':
+                $array_cadastro['usuarioLider'] = 1;
+                break;
+            case '62982693551':
+                $array_cadastro['usuarioLider'] = 1;
+                break;
+            default:
+                # code...
+                break;
+        }
+        
+
         $cadastra = $this->db->insert('usuarios', $array_cadastro);
 
         if($cadastra){

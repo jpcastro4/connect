@@ -37,7 +37,7 @@
                 $.post(site_url+'form/'+action, campos , function(data){
 
                     console.log(data.message)
-                    form.find(btn).html(contentBtn);
+                    
                     if(data.result == 'success'){
                         if(data.redirect){
                             if(data.message){
@@ -60,6 +60,7 @@
                         })
                     }
 
+                    form.find(btn).html(contentBtn);
                     
 
                 },'json')
@@ -151,7 +152,10 @@
         })
 
         $(document).on('submit','#comprovante', function(){
-            alert('form')
+            var $this = $(this).find('button[type=submit]'),
+                 contentBtn = $this.html()
+
+            $this.html('<i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>')
         })
 
 
