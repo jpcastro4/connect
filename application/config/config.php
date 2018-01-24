@@ -27,7 +27,7 @@ if( $_SERVER['HTTP_HOST'] == 'localhost'){
 	$config['base_url'] = 'http://localhost/connect';
 	
 }else{
-	$config['base_url'] = "https://ellobeta.com/";
+	$config['base_url'] = "https://connectmoney.club";
 }
 
 /*
