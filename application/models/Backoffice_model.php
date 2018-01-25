@@ -803,6 +803,185 @@ class Backoffice_model extends CI_Model{
     }
 
 
+    public function implante($posicImplanteID,$usuarioID){  // implanta sempre no posicID 1 mas posso inserir qualquer um
+        
+        $posicRecebedor = $this->posicUser($posicImplanteID);
+        $downlines = $this->downlines($posicRecebedor->posicID);               
+        $posicRecebedor->posicNumDownlines = count($downlines);
+        $posicRecebedor->posicDownlines = $downlines;
+        
+        $sessao = $usuarioID;
+        
+        if($posicImplanteID == 1){ //se for um implante privilegiado
+            
+            $perna = $posicRecebedor->posicNumDownlines+1;
+
+            if($perna < $posicRecebedor->posicNumDownlines){
+                echo json_encode(array('result'=>'error','message'=>'Erro na definição da perna. Contate o suporte.'));
+                return;
+            }
+
+        }else{
+
+            if($posicRecebedor->posicRepeat == 1 AND  $posicRecebedor->posicNumDownlines == 0){
+                
+                //verificar se ele tem irmãos ao lado que já doaram e estao abertos. Se for igual a 3 posiciona um repeat
+                if($this->verificaPropagacaoLateral($posicRecebedor->redePosicRecebedorID) == 3 ){
+                    
+                    //criando posicionamento repeat
+                    $p  = array(
+                        'posicGuid'=>uniqid(),
+                        'usuarioID'=>$posicRecebedor->usuarioID,
+                        'posicNome'=>$this->nome(),
+                        'posicTipo'=>1,
+                        'posicRepeat'=>1
+                    );
+
+                    $this->db->insert('usuarios_posicoes',$p );
+                    $rd = $this->db->insert_id();
+                    
+                    // relacionamento novo novo posic com seu pai ele mesmo
+                    $dr  = array(
+                        'redePosicRecebedorID'=>$posicRecebedor->posicID,
+                        'redePosicDoadorID'=>$rd,
+                        'redeTipo'=>1,
+                        'redePerna'=>1,
+                        'redeStatus'=>1,
+                    );
+
+                    $this->db->insert('doacoes_rede',$dr );
+    
+                    $abertura = strtotime(date('Y-m-d H:i:s'))+86400;
+                    
+                    //abrindo doacao
+                    $d = array(
+                        'doacaoPosicDoador'=>$rd,
+                        'doacaoPosicRecebedor'=>$posicRecebedor->posicID,
+                        'doacaoCod'=>'D'.uniqid(),
+                        'doacaoValor'=>50,
+                        'doacaoTipo'=>1,
+                        'doacaoDtentrada'=>date('Y-m-d H:i:s', $abertura),
+                        'doacaoDtFechamento'=>date('Y-m-d H:i:s', $abertura-1200),
+                        'doacaoCronometro'=>date('Y-m-d H:i:s'),
+                        'doacaoStatus'=>2
+                    );
+
+                    $this->db->insert('doacoes', $d );
+
+                    $ido = $this->db->insert_id();
+                    
+                    $this->aceitaDoacao($ido); //aceita a doação do repeat
+
+                    //verifica novamente para os casos de inserção de um repeat
+                    $downlines = $this->downlines($posicRecebedor->posicID);               
+                    $posicRecebedor->posicNumDownlines = count($downlines);
+                    $posicRecebedor->posicDownlines = $downlines;
+
+                }
+            } 
+        
+            if( $posicRecebedor->posicNumDownlines == 0 ){
+                $perna = 1;
+            }else{
+                $downlines = $posicRecebedor->posicDownlines;
+                $pernasExistentes = array();
+
+                foreach ($downlines as $downline) {
+                    $pernasExistentes[] = $downline->redePerna;
+                }
+                
+                if( !in_array( 1, $pernasExistentes)  ){
+                    $perna = 1;
+
+                }elseif ( !in_array( 2 , $pernasExistentes) ) {
+                    $perna = 2;
+
+                }elseif ( !in_array( 3 , $pernasExistentes) ) {
+                    $perna = 3;
+
+                }
+            }
+
+
+        }
+            
+
+        
+
+        if(empty($perna)){
+            echo json_encode(array('result'=>'error','message'=>'Erro na definição da perna. Contate o suporte.'));
+            return;
+        }
+
+        $this->db->trans_start();
+                    
+        //criando posicionamento
+            $posicao = array(
+                'posicGuid'=>uniqid(),
+                'usuarioID'=>$sessao,
+                'posicTipo'=>1
+            );
+
+            if($this->conta($usuarioID)->usuarioLider == 1){ // se o usuario logado abrindo posicionamento é lider ele abre um repeat
+                $posicao['posicRepeat'] = 1;
+            }
+            
+            $this->db->insert('usuarios_posicoes',$posicao);
+
+            $posicID = $this->db->insert_id();
+            
+        // relacionamento novo doador com recebedor
+            $doacao_rede = array(
+                'redePosicRecebedorID'=>$posicRecebedor->posicID,
+                'redePosicDoadorID'=>$posicID,
+                'redeTipo'=>1,
+                'redePerna'=>$perna
+            );
+            
+            if($this->conta($usuarioID)->usuarioLider == 1){ // se foi aberto um repeat
+                $doacao_rede ['redeStatus'] = 1;
+            }
+            
+            $this->db->insert('doacoes_rede',$doacao_rede);
+
+
+            $cronometro = strtotime(date('Y-m-d H:i:s'))+86400;
+            
+            //abrindo doacao
+            $doacao = array(
+                'doacaoPosicDoador'=>$posicID,
+                'doacaoPosicRecebedor'=>$posicRecebedor->posicID,
+                'doacaoCod'=>'D'.uniqid(),
+                'doacaoValor'=>50,
+                'doacaoTipo'=>1,
+                'doacaoDtentrada'=>date('Y-m-d H:i:s'),
+                'doacaoCronometro'=>date('Y-m-d H:i:s', $cronometro),
+            );
+
+            $this->db->insert('doacoes', $doacao );
+
+            $doacaoID = $this->db->insert_id();
+
+            //aceitar doação do lider
+            if($this->conta($usuarioID)->usuarioLider == 1){ // se é lider e tá posicionando abaixo de si mesmo a doação entra fechada 
+                $this->aceitaDoacao($doacaoID);
+            }
+
+           
+        $this->db->trans_complete();
+        
+        if ($this->db->trans_status() === FALSE){
+            echo json_encode(array('result'=>'error','message'=>'Erro ao aplicar seu posicionamento'));
+            return;
+        }else{
+            echo json_encode(array('result'=>'success','message'=>'Poscionamento realizado.','redirect'=>base_url("backoffice") ));
+            return;
+        }
+
+    }
+
+
+
     public function processaReentrada($usuarioID){
 
 

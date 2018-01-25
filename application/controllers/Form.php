@@ -34,7 +34,9 @@ class Form extends CI_Controller {
         dump($this->backoffice->RastreadorRedeDoacoes());     
     }
 
+    public function implantar($posicRecebedorID,$repeat=false){
 
+    }
 
     //USUARIO
     public function cadastrar(){
