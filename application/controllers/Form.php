@@ -58,9 +58,7 @@ class Form extends CI_Controller {
     public function recuperaSenha(){
 
         $this->usuario->RecuperarSenha();
-    }
-
-    
+    }   
 
     // public function posiciona(){
 

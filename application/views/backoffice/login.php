@@ -39,9 +39,27 @@
     <script type="text/javascript" src="<?php echo base_url() ?>assets/js/app.min.js"></script>
 
     <script> var site_url = '<?php echo base_url() ?>';</script>
+    
 </head>
 
 <body>
+<div class="loading" style="display:none">
+    <div class="sk-circle">
+    <div class="sk-circle1 sk-child"></div>
+    <div class="sk-circle2 sk-child"></div>
+    <div class="sk-circle3 sk-child"></div>
+    <div class="sk-circle4 sk-child"></div>
+    <div class="sk-circle5 sk-child"></div>
+    <div class="sk-circle6 sk-child"></div>
+    <div class="sk-circle7 sk-child"></div>
+    <div class="sk-circle8 sk-child"></div>
+    <div class="sk-circle9 sk-child"></div>
+    <div class="sk-circle10 sk-child"></div>
+    <div class="sk-circle11 sk-child"></div>
+    <div class="sk-circle12 sk-child"></div>
+    <div class="text-center text-white" style="padding-top:100px">Processando...</div>
+    </div>
+</div>
     <div class="page-container">
         <!-- PAGE CONTENT -->
         <div class="content container h-100">

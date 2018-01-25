@@ -1,37 +1,61 @@
     var app = function(){
 
-        $('.table').DataTable({
-            responsive: true
-        });
+        $('[data-painel]').on('click', function(e){
+            e.preventDefault()
+           
+            var $id = $(this).text()
+                        
+            if($($id).is(':hidden')){
+                $($id).fadeIn()
+            }else{
+                $($id).fadeOut()
+            }
+
+             
+        })
     }
+    var loading = function(close=false){
+        if(close){
+            $(document).find('.loading').fadeOut()
+        }else{
+            $(document).find('.loading').fadeIn()
+        }
+        
+    }
+
     var formsave = function(){
 
         $('.form').on('submit',function(e){
             e.preventDefault();
-
+            
             const form = $(this)
-
-            var ok = true
+            
+            
+            
+            var ok = false
 
             const btn = '.btn[type=submit]',
                   contentBtn = form.find(btn).html()
             
             form.find(btn).html('<i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>');
             
+            var n = 0
             form.find('input[required]').each(function(e){
                 
                 if( $(this).val() == ''){
-                    
+                    n++
                     $(this).parents('.form-group').addClass('has-warning')
                     $(this).addClass('form-control-warning').after('<div class="form-control-feedback">Não deixe vazio</div>')
-
-                    ok = true
                 }
 
             })
 
-            if(ok){
+            if(n == 0){
+                ok = true
+            }
 
+            if(ok){
+                loading()
                 var action = form.attr('action') ,campos = form.serialize()
 
                 $.post(site_url+'form/'+action, campos , function(data){
@@ -45,26 +69,30 @@
                             }
                             window.location.href = data.redirect
                         }else{
+                            loading(true)
                             alert(data.message)
                         }
                     }
                     
                     if(data.result == 'error'){
+                        loading(true)
                         alert('Erro: '+data.message)
                     }
 
                     if(data.clean) {
-
+                        loading(true)
                         form.find('input,textarea').each(function () {
                             $(this).val('')
                         })
                     }
-
+                    
                     form.find(btn).html(contentBtn);
                     
 
                 },'json')
                 .fail(function(e){
+                    loading(true)
+                    alert('Erro grave. Procure o suporte.')
                     console.log(e)
                 })
             }else{
@@ -94,17 +122,26 @@
             var numDoacoes = $this.data('numdoacoes')
 
             if(r == true ){
+                loading()
+
                 $.post(site_url + 'form/abrePosicao', { numDoacoes: numDoacoes }, function(data){
                     console.log(data)
                     $this.html(btnContent)
                     if (data.result == 'success') {
-                        alert(data.message)
+                        
                         if(data.redirect){
+                            if(data.message){
+                                alert(data.message)
+                            }
                             window.location.href = data.redirect
+                        }else{
+                            loading(true)
+                            alert(data.message)
                         }
                     }
 
                     if (data.result == 'error') {
+                        loading(true)
                         alert(data.message)
                     }
 
@@ -112,10 +149,13 @@
 
                 },'json')
                 .fail(function (e) {
+                    loading(true)
                     $this.html(btnContent)
                     console.log(e.responseText )
                 })
             }else{
+                loading(true)
+                
                 $this.html(btnContent)
             }
                 
@@ -141,11 +181,17 @@
 
         $('#comprovante').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget)  
-            var doacaoID = button.data('doacao') 
+            var doacaoID = button.data('doacao')
+            var nome = button.data('nome')
+            var wpp = button.data('whatsapp')
+            var picpay = button.data('picpay')            
 
             var modal = $(this)
             modal.find('form input[name=doacaoID]').val(doacaoID)
-
+            modal.find('#nome').text(nome);
+            modal.find('#wpp').html(wpp);
+            modal.find('#picpay').text(picpay);
+            modal.find('#qrcode').html('').qrcode('https://picpay.me/'+picpay);
         })
 
         $(document).on('submit','#comprovante', function(){
@@ -157,7 +203,7 @@
 
 
     }
-
+    
     var retirar = function(){
 
         $("#rejeitar").on('click', function(e){
@@ -172,30 +218,38 @@
             $this.html('<i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>')
 
             if(r == true){
-                
+                loading()
                 $.post(site_url+'form/rejeitar', {doacaoID: doacaoID}, function(data){
 
                     if(data.result == 'success'){
-                        if(data.message){
-                            alert(data.message)
-                        }
+                        
                         if(data.redirect){
+                            if(data.message){
+                                alert(data.message)
+                            }
                             window.location.href = data.redirect
+                        }else{
+                            loading(true)
+                            alert(data.message)
                         }
                     }
 
                     if (data.result == 'error') {
+                        loading(true)
                         alert(data.message)
                     }
 
                     $this.html(btnContent)
                 },'json')
                 .fail(function (e) {
+                    loading(true)
                     $this.html(btnContent)
+                    alert('Erro grave. Procure o suporte.')
                     console.log(e.responseText )
                 })
 
             }else{
+                loading(true)
                 $this.html(btnContent)
             }
 
@@ -217,28 +271,34 @@
             $this.html('<i class="fa fa-spinner fa-spin fa-fw fa-2x"></i>')
 
             if(r == true){
-
+                loading()
                 $.post(site_url+'form/aceitar', {doacaoID: doacaoID}, function(data){
 
                     console.log(data)
 
                     if(data.result == 'success'){
-                        if(data.message){
-                            alert(data.message)
-                        }
                         if(data.redirect){
+                            if(data.message){
+                                alert(data.message)
+                            }
                             window.location.href = data.redirect
+                        }else{
+                            loading(true)
+                            alert(data.message)
                         }
                     }
 
                     if (data.result == 'error') {
+                        loading(true)
                         alert(data.message)
                     }
 
                     $this.html(btnContent)
                 },'json')
                 .fail(function (e) {
+                    loading(true)
                     $this.html(btnContent)
+                    alert('Erro grave. Procure o suporte.')
                     console.log(e.responseText )
                 })                
             }else{
@@ -255,3 +315,4 @@
     comprovante()
     retirar()
     aceitar()
+    app()

@@ -154,12 +154,15 @@
 
                                         <tbody>
                                         <?php if(!empty($doacoes)): ?>
-                                            <?php foreach($doacoes as $doacao): ?>
+                                            <?php foreach($doacoes as $doacao): 
+                                                $receb = $this->backoffice_model->posicUser($doacao->doacaoPosicRecebedor)?>
                                             <tr>
-                                                <td><small><a href="#"><?php echo $doacao->doacaoCod ?></a></small></td>
-                                                <td><?php echo $this->backoffice_model->posicUser($doacao->doacaoPosicRecebedor)->usuarioNome; ?></td>
+                                                <td><small><a href="#" data-painel="true">#<?php echo $doacao->doacaoCod ?></a></small></td>
+                                                <td><?php echo (empty($receb->posicNome))? $receb->usuarioNome : $receb->posicNome  ; ?></td>
                                                 <td>
+                                                <?php if($doacao->doacaoStatus == 1) echo '<a href="'. base_url('uploads/comprovantes/').$doacao->doacaoComprovante.'" download="'.$doacao->doacaoComprovante.'" target="_blank" >' ?>
                                                 <?php $this->backoffice_model->statusDoacao($doacao->doacaoStatus) ?>
+                                                <?php if($doacao->doacaoStatus == 1) echo '</a>'?>
                                                 </td>
                                                 <!-- <td>
                                                     $<?php echo $doacao->doacaoValor ?>
@@ -169,10 +172,17 @@
                                                     <span data-countdown="<?php echo date('Y/m/d H:i:s', strtotime($doacao->doacaoCronometro) ) ?>"></span>
                                                 </td>
                                                 <td>
-                                                    <button class="btn btn-small btn-primary" data-toggle="modal" data-target="#comprovante" data-doacao="<?php echo $doacao->doacaoID ?>">Enviar comprovante</button>                                                    
+                                                    <button class="btn btn-small btn-primary" data-toggle="modal" data-target="#comprovante" data-doacao="<?php echo $doacao->doacaoID ?>" data-picpay="<?php echo $receb->usuarioPicPay ?>" data-nome="<?php echo (empty($receb->posicNome))? $receb->usuarioNome : $receb->posicNome; ?>" data-whatsapp="<?php echo $receb->usuarioTelefone ?> <?php echo (empty($receb->usuarioTelefoneSec))? '' :'<br>Whatsapp Secundário: '. $receb->usuarioTelefoneSec; ?>" >Pagar</button>                                                    
                                                 </td>
                                             </tr>
-                                             
+                                            <tr class="sub-panel" id="<?php echo $doacao->doacaoCod ?>" style="display:none">
+                                                <td colspan="4">
+                                                Doador: <?php echo (empty($receb->posicNome))? $receb->usuarioNome : $receb->posicNome  ; ?> <br>
+                                                Whatsapp: <?php echo $receb->usuarioTelefone ?> <br>
+                                                <?php echo (empty($receb->usuarioTelefoneSec))? '' :'Whatsapp Secundário: '. $receb->usuarioTelefoneSec; ?> <br>
+                                                </td>
+                                            </tr>
+                                                
                                             <?php endforeach; ?>
                                         <?php else : ?>
                                              <td>Não há pagamentos</td> 
@@ -185,27 +195,41 @@
 
                         <div class="modal fade" id="comprovante">
                             <div class="modal-dialog modal-sm" role="document">
-                                <form action="<?php echo base_url('form/comprovante') ?>" method="post" enctype="multipart/form-data">
-                                    <div class="modal-content">
+                                
+                                <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title">Enviar comprovante</h5>
+                                        <h5 class="modal-title">Dados para doação</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-                                    <div class="modal-body">
-                                        <label class="custom-file">
-                                            <input type="file" id="file" name="comprovante" class="custom-file-input" required>
-                                            <span class="custom-file-control">Clique aqui para enviar</span>
-                                        </label>
-                                        <input name="doacaoID" type="hidden" />
-                                    
+                                    <div class="modal-body text-center">
+                                        <div class="dados">
+                                            <p id="nome"></p> 
+                                            <p id="wpp"></p>
+                                        </div>
+                                        <img class="w-100" src="<?php echo base_url('assets/img/picpay.png') ?>" />
+                                        <h3 id="picpay" class="dados mb-3"></h3>
+                                        <div id="qrcode"></div>
+                                        
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary">Enviar</button>
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    </div>
-                                </form>
+                                    <form action="<?php echo base_url('form/comprovante') ?>" method="post" enctype="multipart/form-data">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Envie o comprovante</h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <label class="custom-file">
+                                                <input type="file" id="file" name="comprovante" class="custom-file-input" required>
+                                                <span class="custom-file-control">Clique aqui para inserir</span>
+                                            </label>
+                                            <input name="doacaoID" type="hidden" />
+                                        
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Enviar</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -228,15 +252,19 @@
 
                                         <tbody>
                                         <?php if(!empty($recebimentos)): ?>
-                                        <?php foreach($recebimentos as $receb): ?>
+                                        <?php foreach($recebimentos as $receb): 
+                                            $doador = $this->backoffice_model->posicUser($receb->doacaoPosicDoador)?>
                                         <tr>
-                                            <td><small><a href="<?php if($receb->doacaoStatus == 1) echo base_url('uploads/comprovantes/').$receb->doacaoComprovante ;?>" <?php if($receb->doacaoStatus == 1) echo 'download="'.$receb->doacaoComprovante.'"' ;?>  target="_blank"><?php echo $receb->doacaoCod ?></a></small></td>
-                                            <td><?php echo $this->backoffice_model->posicUser($receb->doacaoPosicDoador)->usuarioNome; ?></td>
+                                            <td><small> <a href="#" data-painel="true">#<?php echo $receb->doacaoCod ?></a></small></td>
+                                            <td><?php echo (empty($doador->posicNome))? $doador->usuarioNome : $doador->posicNome  ; ?></td>
                                             <td>
-                                                <?php $this->backoffice_model->statusDoacao($receb->doacaoStatus) ?> 
+
+                                            <?php if($receb->doacaoStatus == 1) echo '<a href="'. base_url('uploads/comprovantes/').$receb->doacaoComprovante.'" download="'.$receb->doacaoComprovante.'" target="_blank" >' ?>
+                                                <?php $this->backoffice_model->statusDoacao($receb->doacaoStatus) ?>
+                                            <?php if($receb->doacaoStatus == 1) echo '</a>'?>
                                             </td>
                                             <!-- <td>
-                                                $<?php echo $receb->doacaoValor ?>
+                                                $<?php echo $receb->doacaoValor ?> 
                                             </td> -->
                                             <td>
                                                 <span data-countdown="<?php echo date('Y/m/d H:i:s', strtotime($receb->doacaoCronometro) ) ?>"></span>
@@ -255,8 +283,10 @@
                                             </td>
                                         </tr>
                                         <tr class="sub-panel" id="<?php echo $receb->doacaoCod ?>" style="display:none">
-                                            <td>
-                                                <button class="btn btn-primary">Enviar comprovante</button>                                                    
+                                            <td colspan="4">
+                                            Doador: <?php echo (empty($doador->posicNome))? $doador->usuarioNome : $doador->posicNome  ; ?> <br>
+                                            Whatsapp: <?php echo $doador->usuarioTelefone ?> <br>
+                                            <?php echo (empty($doador->usuarioTelefoneSec))? '' :'Whatsapp Secundário: '. $doador->usuarioTelefoneSec; ?> <br>
                                             </td>
                                         </tr>
                                         <?php endforeach; ?>

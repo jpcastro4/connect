@@ -23,7 +23,7 @@ class Backoffice_model extends CI_Model{
 
         $return = $this->db->get('usuarios');
 
-        if($return->num_rows() == 1){
+        if($sessao == 1){
 
             //dando status 1 para o cabeça
             $this->db->where('usuarioID',$sessao);
@@ -67,6 +67,8 @@ class Backoffice_model extends CI_Model{
             // $this->db->insert('doacoes', $doacao );
 
             
+        }else{
+            echo "Foi possível. Seu usuario não administrador.";
         }
     }
     //////////////////////////////////////////////////////////////////////////////////////   VIEWS
@@ -74,7 +76,7 @@ class Backoffice_model extends CI_Model{
    	public function conta($usuarioID=false){
 
         if(empty($this->native_session->get('usuario_id'))){
-            echo json_encode(array('restul'=>'success','redirect'=>base_url("backoffice")));
+            echo json_encode(array('result'=>'success','redirect'=>base_url("backoffice")));
             return;
         }
 
@@ -275,6 +277,16 @@ class Backoffice_model extends CI_Model{
         return $return->num_rows();
  
     }
+    
+    private function nome(){
+        $years = array(1950,1960,1970,1980,1990,2000,2010);
+        $y = array_rand($years);
+        $url = 'http://servicodados.ibge.gov.br/api/v2/censos/nomes/ranking/?decada='.$years[$y];
+        $str = json_decode(file_get_contents($url));
+        $randName =  array_rand($str[0]->res);
+        
+        return ucfirst(strtolower($str[0]->res[$randName]->nome));
+    }
      
     private function abrePosicionamento($posicRecebedor){ //AQUI DOADOR SE TORNA RECEBEDOR  POIS FOI ELEITO COM ESTADO COMPATIVEL
         
@@ -287,12 +299,14 @@ class Backoffice_model extends CI_Model{
             
             //verificar se ele tem irmãos ao lado que já doaram e estao abertos. Se for igual a 3 posiciona um repeat
             if($this->verificaPropagacaoLateral($posicRecebedor->redePosicRecebedorID) == 3 ){
-                                
+                
                 //criando posicionamento repeat
                 $p  = array(
                     'posicGuid'=>uniqid(),
                     'usuarioID'=>$posicRecebedor->usuarioID,
+                    'posicNome'=>$this->nome(),
                     'posicTipo'=>1,
+                    'posicRepeat'=>1
                 );
 
                 $this->db->insert('usuarios_posicoes',$p );
@@ -359,8 +373,6 @@ class Backoffice_model extends CI_Model{
 
             }
         }
-
-
 
         if(empty($perna)){
             echo json_encode(array('result'=>'error','message'=>'Erro na definição da perna. Contate o suporte.'));
@@ -457,7 +469,7 @@ class Backoffice_model extends CI_Model{
                 return 16;
                 break;
             default:
-                return 9;
+                return 27;
                 break;
         }
         
@@ -465,6 +477,11 @@ class Backoffice_model extends CI_Model{
 
     // Start posicionamentos
     public function processarPosicionamento(){
+        if(empty($this->native_session->get('usuario_id'))){
+            echo json_encode(array('result'=>'success','redirect'=>base_url('backoffice/login')));
+            return;
+        }
+
         $numDoacoes = $this->input->post('numDoacoes');
 
         if(empty($numDoacoes)){
@@ -483,7 +500,7 @@ class Backoffice_model extends CI_Model{
 
         $numPosic = $this->numPosicionamentos($usuario->usuarioID);
 
-        if($numPosic > $numPosicPerm ){
+        if($numPosic >= $numPosicPerm ){
             echo json_encode(array('result'=>'error','message'=>'Você alcançou o número de posições. Suba de nível.'));
             return;
 
@@ -508,7 +525,7 @@ class Backoffice_model extends CI_Model{
         }
 
         if($status == 1){
-            echo '<badge class="badge badge-danger">Comprovante enviado</badge>';
+            echo '<badge class="badge badge-success">Ver o comprovante</badge>';
         }
 
     }
@@ -516,6 +533,11 @@ class Backoffice_model extends CI_Model{
     
     //////////////////////////////////////////////////////////////////////////   DOACOES
     public function enviarComprovante(){
+
+        if(empty($this->native_session->get('usuario_id'))){
+            redirect('backoffice/login');
+            return;
+        }
 
         $this->load->library('upload');
 
@@ -587,9 +609,10 @@ class Backoffice_model extends CI_Model{
     public function aceitaDoacao($doacaoIDOut=null){
 
         if(empty($this->native_session->get('usuario_id'))){
-            echo json_encode(array('result'=>'error','message'=>'Erro. Procure o suporte.'));
+            echo json_encode(array('result'=>'success','redirect'=>base_url('backoffice/login')));
             return;
         }
+
         if(!empty($doacaoIDOut)){
             $doacaoID = $doacaoIDOut;
         }else{
@@ -732,6 +755,11 @@ class Backoffice_model extends CI_Model{
     }
 
     public function rejeitaDoacao(){
+
+        if(empty($this->native_session->get('usuario_id'))){
+            echo json_encode(array('result'=>'success','redirect'=>base_url('backoffice/login')));
+            return;
+        }
 
         $doacaoID = $this->input->post('doacaoID');
 

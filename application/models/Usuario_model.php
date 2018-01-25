@@ -28,7 +28,7 @@ class Usuario_model extends CI_Model{
         $return = $this->db->get('usuarios');
 
         if($return->num_rows() > 0){
-            echo json_encode( array('result'=>'error','message'=>'Já existe membro com esse número') );
+            echo json_encode( array('result'=>'error','message'=>'Já existe um membro com esse número.') );
             return;
         }
 
@@ -42,6 +42,9 @@ class Usuario_model extends CI_Model{
                 $u = true;
                 break;
             case '62982693551':
+                $u = true;
+                break;
+            case '62981348827':
                 $u = true;
                 break;
             default:

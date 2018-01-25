@@ -33,18 +33,28 @@
     <script type="text/javascript" src="<?php echo base_url()?>assets/js/app.min.js"></script>
     
     <script> var site_url = '<?php echo base_url() ?>';</script>
-    <style>
-        .btn-small{
-            padding:5px 8px;
-            font-size:11px;
-        }
-        .dropdown-item input{
-            font-size:11px;
-        }
-    </style>
+    
 </head>
 
 <body>
+<div class="loading" style="display:none">
+    <div class="sk-circle">
+    <div class="sk-circle1 sk-child"></div>
+    <div class="sk-circle2 sk-child"></div>
+    <div class="sk-circle3 sk-child"></div>
+    <div class="sk-circle4 sk-child"></div>
+    <div class="sk-circle5 sk-child"></div>
+    <div class="sk-circle6 sk-child"></div>
+    <div class="sk-circle7 sk-child"></div>
+    <div class="sk-circle8 sk-child"></div>
+    <div class="sk-circle9 sk-child"></div>
+    <div class="sk-circle10 sk-child"></div>
+    <div class="sk-circle11 sk-child"></div>
+    <div class="sk-circle12 sk-child"></div>
+    <div class="text-center text-white" style="padding-top:100px">Processando...</div>
+    </div>
+</div>
+
     <!-- NAVBAR -->
     <nav class="navbar navbar-toggleable-md">
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav">
@@ -117,7 +127,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle dropdown-has-after" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
-                        <img src="<?php echo base_url() ?>assets/img/default-user.jpg" alt="" class="user-img"> <?php echo $conta->usuarioNome; ?>
+                        <img src="<?php echo base_url() ?>assets/img/default_avatar.png" alt="" class="user-img"> <?php echo $conta->usuarioNome; ?>
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
                         <span class="dropdown-item">
