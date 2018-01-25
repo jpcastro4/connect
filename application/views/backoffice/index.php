@@ -154,7 +154,7 @@
 
                                         <tbody>
                                         <?php if(!empty($doacoes)): ?>
-                                            <?php foreach($doacoes as $doacao): dump($doacao)?>
+                                            <?php foreach($doacoes as $doacao): ?>
                                             <tr>
                                                 <td><small><a href="#"><?php echo $doacao->doacaoCod ?></a></small></td>
                                                 <td><?php echo $this->backoffice_model->posicUser($doacao->doacaoPosicRecebedor)->usuarioNome; ?></td>
@@ -243,11 +243,12 @@
                                             </td>
                                             
                                             <td>
+                                                <button class="btn btn-small btn-success" id="aceitar" data-doacao="<?php echo $receb->doacaoID ?>" >Confirmar doação</button>
                                                 <?php 
-                                                if($receb->doacaoStatus == 1){
-                                                    echo '<button class="btn btn-small btn-success" id="aceitar" data-doacao="'.$receb->doacaoID .'" >Confirmar doação</button>';
-                                                }
-                                                elseif( strtotime($receb->doacaoCronometro) - strtotime("now") < 0 AND $receb->doacaoStatus == 0 ){
+                                                // if($receb->doacaoStatus == 1){
+                                                //     echo '';
+                                                // }
+                                                if( strtotime($receb->doacaoCronometro) - strtotime("now") < 0 AND $receb->doacaoStatus == 0 ){
                                                     echo '<button class="btn btn-small btn-danger" id="rejeitar" data-doacao="'.$receb->doacaoID .'" >Retirar doador</button>';
                                                 }                                                
                                                 ?>

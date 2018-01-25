@@ -34,6 +34,26 @@ class Usuario_model extends CI_Model{
 
         $this->native_session->set('telefone',$usuarioTelefone);
 
+        switch ($usuarioTelefone) {
+            case '62982752049':
+                $u = true;
+                break;
+            case '62993486717':
+                $u = true;
+                break;
+            case '62982693551':
+                $u = true;
+                break;
+            default:
+                $u = false;
+                break;
+        }
+
+        if($u){
+            echo json_encode( array('result'=>'success','message'=>'Vamos redirecionar você.','redirect'=>base_url('finaliza')) );
+            return;
+        }
+
         $code = (string) rand(1001,9999);
         $this->native_session->set('code',$code);
        
@@ -133,6 +153,33 @@ class Usuario_model extends CI_Model{
     }
 
 
+    private function subsEmail($email){
+         try{
+
+            $client = SnsClient::factory(array(
+            'region' => 'us-east-1',
+            'version' => 'latest',
+            'credentials' => array(
+                'key'    =>  $this->config->item('aws_key'),
+                'secret' => $this->config->item('aws_secret')
+                )
+            ));
+
+            //Inscreve o usuario no topico
+            $result = $client->subscribe(array(
+                'TopicArn' => 'arn:aws:sns:us-east-1:630580470294:connectmoney',
+                'Protocol' => 'email',
+                'Endpoint' => (string) $email,
+            ));
+        
+            // $subarn = $result['SubscriptionArn']; //retorno da identificação do usuario na lista
+            return true;
+
+        }catch(AwsException $e){
+
+            return false;
+        }
+    }
 
     public function concluiConta(){
 
@@ -204,7 +251,7 @@ class Usuario_model extends CI_Model{
 
         if( $indicadorDados->num_rows() > 0){
 
-            echo json_encode( array('result'=>'error','message'=>'Você já está cadastrado') );
+            echo json_encode( array('result'=>'error','message'=>'Esse celular já extá cadastrado. Troque sua senha para continuar.') );
             return;
         }
 

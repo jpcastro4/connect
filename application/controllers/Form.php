@@ -20,6 +20,22 @@ class Form extends CI_Controller {
         //echo "Em manutencao";
     }
 
+
+    public function geneses(){
+
+        $this->backoffice->geneses();
+    }
+    
+    public function rede(){
+        dump($this->backoffice->RedeDoacoes());     
+    }
+    public function rastreador(){
+        $this->backoffice->RedeDoacoes();
+        dump($this->backoffice->RastreadorRedeDoacoes());     
+    }
+
+
+
     //USUARIO
     public function cadastrar(){
 
@@ -44,11 +60,7 @@ class Form extends CI_Controller {
         $this->usuario->RecuperarSenha();
     }
 
-    public function preview(){
-
-        $this->backoffice->RedeDoacoes();
-        
-    }
+    
 
     // public function posiciona(){
 

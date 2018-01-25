@@ -100,9 +100,6 @@
                     if (data.result == 'success') {
                         alert(data.message)
                         if(data.redirect){
-                            if(data.message){
-                                alert(data.message)
-                            }
                             window.location.href = data.redirect
                         }
                     }

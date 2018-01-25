@@ -43,15 +43,15 @@ class Backoffice_model extends CI_Model{
             
             //não há relacionamento nem doacao para o primeiro posicionament
             // // relacionamento novo doador com recebedor
-            // $doacao_rede = array(
-            //     'redePosicRecebedorID'=>$posicID,
-            //     'redePosicDoadorID'=>$posicID,
-            //     'redeTipo'=>1,
-            //     'redePerna'=>1,
-            //     'redeStatus'=>1
-            // );
+            $doacao_rede = array(
+                'redePosicRecebedorID'=>0,
+                'redePosicDoadorID'=>$posicID,
+                'redeTipo'=>1,
+                'redePerna'=>1,
+                'redeStatus'=>1
+            );
 
-            // $this->db->insert('doacoes_rede',$doacao_rede);
+            $this->db->insert('doacoes_rede',$doacao_rede);
 
             // $cronometro = strtotime(date('Y-m-d H:i:s'))+86400;
             // //abrindo doacao
@@ -171,7 +171,7 @@ class Backoffice_model extends CI_Model{
 
     public $arrayRedeDoacoes = array();
 
-    public function RedeDoacoes($posicID = 1, $linha = 1){
+    public function RedeDoacoes($posicID = 0, $linha = 1){
 
         //INDICA O USUARIO MATRIZ
         $this->db->select('*');
@@ -191,36 +191,30 @@ class Backoffice_model extends CI_Model{
                 $proximo = $row->redePosicDoadorID;
                 $this->RedeDoacoes($proximo, $linha+1);
             }
-            return true;
+            //return true;
             //dump($return->result());
             //echo '<pre>'.print_r($this->$arrayRedeDoacoes).'</pre>';
-            
         }
-        else{          
-            //SE É O PRIMEIRO USUARIO
-            if($posicID == 1){
+        // else{          
+        //     //SE É O PRIMEIRO USUARIO
+        //     if($posicID == 0){
 
-                $this->db->select('*');
-                $this->db->where('posicID',1);
-                $this->db->from('usuarios_posicoes as up');
-                $this->db->join('usuarios as u', 'up.usuarioID = u.usuarioID' );
-                $return = $this->db->get();
                 
-                //define o numero de downlines pra definir a perna
-                $return->row()->posicNumDownlines = 0;
-                //abre novo posicionamento para o primeiro usuario
-                $this->abrePosicionamento($return->row());
-                //dump($return->row());
 
-                return true;
-                
-            }
-        }
+        //         //abre novo posicionamento para o primeiro usuario
+        //         //$this->abrePosicionamento($return->row());
+        //         //dump($return->row());
 
-        return false;
+        //         return true;
+        //     }
+        // }
+
+        //return false;
+
+        //
 
         // retornando para dentro do rastreamento
-        //return $this->arrayRedeDoacoes;
+        return $this->arrayRedeDoacoes;
     }
 
 
@@ -236,10 +230,7 @@ class Backoffice_model extends CI_Model{
         if( $travado == 1 ){
             $nivel = $this->countArrayDoacoes();
         }
-
-        echo json_encode($this->arrayRedeDoacoes);
-        return;
-                 
+     
         if( $nivel > 0 ){ //VERIRICA SE O NIVEL AINDA É MAIOR QUE 0.
             $u = '';
             foreach( $this->arrayRedeDoacoes[$linha] as $user){ // OBSERVANDO AS LINHAS DA ESQUERDA PRA DIREITA
@@ -263,10 +254,9 @@ class Backoffice_model extends CI_Model{
 
                 if($user->posicNumDownlines == 3) continue;  // se ja tem a quantidade de indicados   
 
-                $u = $user;
-                $this->abrePosicionamento($user);
-                return;
+                return $user;
                 break;
+                exit;
                 
             }
             
@@ -293,17 +283,16 @@ class Backoffice_model extends CI_Model{
         // $nome = file_get_contents('')
         // return;
 
-        if($posicRecebedor->posicRepeat == 1 ){
+        if($posicRecebedor->posicRepeat == 1 AND  $posicRecebedor->posicNumDownlines == 0){
             
             //verificar se ele tem irmãos ao lado que já doaram e estao abertos. Se for igual a 3 posiciona um repeat
             if($this->verificaPropagacaoLateral($posicRecebedor->redePosicRecebedorID) == 3 ){
-                
+                                
                 //criando posicionamento repeat
                 $p  = array(
                     'posicGuid'=>uniqid(),
                     'usuarioID'=>$posicRecebedor->usuarioID,
                     'posicTipo'=>1,
-                    //'posicStatus'=>1
                 );
 
                 $this->db->insert('usuarios_posicoes',$p );
@@ -337,13 +326,18 @@ class Backoffice_model extends CI_Model{
 
                 $this->db->insert('doacoes', $d );
 
+                $ido = $this->db->insert_id();
+                
+                $this->aceitaDoacao($ido); //aceita a doação do repeat
+
                 //verifica novamente para os casos de inserção de um repeat
                 $downlines = $this->downlines($posicRecebedor->posicID);               
                 $posicRecebedor->posicNumDownlines = count($downlines);
                 $posicRecebedor->posicDownlines = $downlines;
-            }
-        }  
 
+            }
+        } 
+        
         if( $posicRecebedor->posicNumDownlines == 0 ){
             $perna = 1;
         }else{
@@ -366,14 +360,15 @@ class Backoffice_model extends CI_Model{
             }
         }
 
+
+
         if(empty($perna)){
             echo json_encode(array('result'=>'error','message'=>'Erro na definição da perna. Contate o suporte.'));
             return;
         }
 
         $this->db->trans_start();
-            
-        
+                    
         //criando posicionamento
             $posicao = array(
                 'posicGuid'=>uniqid(),
@@ -417,12 +412,15 @@ class Backoffice_model extends CI_Model{
                 'doacaoCronometro'=>date('Y-m-d H:i:s', $cronometro),
             );
 
-            if($this->conta()->usuarioID == $posicRecebedor->usuarioID){ // se é lider e tá posicionando abaixo de si mesmo a doação entra fechada
-                $doacao['doacaoStatus'] = 2;
-                $doacao['doacaoDtFechamento']= date('Y-m-d H:i:s');
+            $this->db->insert('doacoes', $doacao );
+
+            $doacaoID = $this->db->insert_id();
+
+            //aceitar doação do lider
+            if($this->conta()->usuarioLider == 1){ // se é lider e tá posicionando abaixo de si mesmo a doação entra fechada 
+                $this->aceitaDoacao($doacaoID);
             }
 
-            $this->db->insert('doacoes', $doacao );
            
         $this->db->trans_complete();
         
@@ -490,14 +488,18 @@ class Backoffice_model extends CI_Model{
             return;
 
         }
-
-        if($this->RedeDoacoes()){
-
-            if($this->RastreadorRedeDoacoes() === false){
-                echo json_encode(array('result'=>'error','message'=>'Aguarde posicionamentos abertos'));
-
-            }                
+         
+        $this->RedeDoacoes();
+        $novo = $this->RastreadorRedeDoacoes();
+        if($novo){
+            //json_encode($novo); 
+            //return;
+            $this->abrePosicionamento($novo);
+           
+        }else{
+            echo json_encode(array('result'=>'error','message'=>'Aguarde posicionamentos abertos'));
         }
+         
     }
 
     public function statusDoacao($status){
@@ -582,15 +584,18 @@ class Backoffice_model extends CI_Model{
 
     }
 
-    public function aceitaDoacao(){
+    public function aceitaDoacao($doacaoIDOut=null){
 
         if(empty($this->native_session->get('usuario_id'))){
             echo json_encode(array('result'=>'error','message'=>'Erro. Procure o suporte.'));
             return;
         }
-        
-        $doacaoID = $this->input->post('doacaoID');
-
+        if(!empty($doacaoIDOut)){
+            $doacaoID = $doacaoIDOut;
+        }else{
+            $doacaoID = $this->input->post('doacaoID');
+        }
+       
         $this->db->where('doacaoID',$doacaoID);
         $doacao = $this->db->get('doacoes')->row();
         
@@ -665,12 +670,12 @@ class Backoffice_model extends CI_Model{
 
             // se o posicionamento recebedor já tem 3 doacoes concluidas
             //////////////////// (aqui o objetivo é reduzir consultas desencessárias no lopping de rastreamento da rede)
-            $this->db->where('doacaoPosicRecebedor',$posicRecebedorID);
-            $this->db->where('doacaoStatus',2);
+            $this->db->where(array('doacaoPosicRecebedor'=>$posicRecebedorID,'doacaoStatus'=>2));
             $d = $this->db->get('doacoes');
+
             if($d->num_rows() == 3){
                 $this->db->where('posicID',$posicRecebedorID);
-                $this->db->update('usuario_posicoes',array('posicStatus'=>1));
+                $this->db->update('usuarios_posicoes',array('posicStatus'=>1));
             }
 
         $this->db->trans_complete();
@@ -679,8 +684,11 @@ class Backoffice_model extends CI_Model{
             echo json_encode(array('result'=>'error','message'=>'Erro ao aplicar doacao. Procure o suporte'));
             return;
         }else{
-            echo json_encode(array('result'=>'success','message'=>'Doacão aceita.','redirect'=>base_url("backoffice") ));
-            return;
+
+            if($doacaoIDOut==false){
+                echo json_encode(array('result'=>'success','message'=>'Doacão aceita.','redirect'=>base_url("backoffice") ));
+                return;
+            }
         }
     }
 
@@ -699,7 +707,7 @@ class Backoffice_model extends CI_Model{
                 $a = $usuario->usuarioNumReentradas;
                     break;
             case 'indicacao':
-                $a = $usuario->usuarioNumIndicacoes;
+                $a = $usuario->usuarioNumIndicados;
                     break;
             default:
                  
@@ -716,7 +724,7 @@ class Backoffice_model extends CI_Model{
 
                 $novoNivel = $usuario->usuarioNivel +1;
 
-                $this->db->where('usuario',$usarioID);
+                $this->db->where('usuarioID',$usuario->usarioID);
                 $this->db->update('usuarios', array('usuarioNivel'=>$novoNivel));
             }
         }
