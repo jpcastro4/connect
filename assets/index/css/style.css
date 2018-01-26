@@ -58,8 +58,8 @@ Main components
 -------------------------------- */
 header {
   position: relative;
-  height: 180px;
-  line-height: 180px;
+  /* height: 180px;
+  line-height: 180px; */
   text-align: center;
   background-color: #a9c056;
 }
@@ -72,8 +72,8 @@ header h1 {
 }
 @media only screen and (min-width: 1024px) {
   header {
-    height: 240px;
-    line-height: 240px;
+    /* height: 240px;
+    line-height: 240px; */
   }
   header h1 {
     font-size: 36px;
@@ -438,6 +438,20 @@ header h1 {
   font-size: 0.875rem;
   line-height: 1.4;
   color: #6c7d8e;
+}
+.cd-faq-content ol,.cd-faq-content ul {
+  list-style: none;
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: #6c7d8e;
+  margin-left:20px
+}
+
+.btn-spr{
+  font-size:30px;
+  padding:30px 45px;
+  background:rgb(228, 131, 40);
 }
 @media only screen and (min-width: 768px) {
   .cd-faq-content {

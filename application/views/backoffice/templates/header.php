@@ -59,7 +59,7 @@
     <nav class="navbar navbar-toggleable-md">
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav">
             <span>
-                <i class="fa fa-code-fork"></i>
+                <i class="fa fa-code-user"></i>
             </span>
         </button>
 

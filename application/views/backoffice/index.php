@@ -220,7 +220,7 @@
                                         <div class="modal-body">
                                             <label class="custom-file">
                                                 <input type="file" id="file" name="comprovante" class="custom-file-input" required>
-                                                <span class="custom-file-control">Clique aqui para inserir</span>
+                                                <span class="custom-file-control">INSERIR IMAGEM</span>
                                             </label>
                                             <input name="doacaoID" type="hidden" />
                                         

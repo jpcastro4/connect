@@ -85,7 +85,7 @@
                                         <span class="input-group-addon" id="basic-addon1">
                                                 <i class="fa fa-user-o"></i>
                                             </span>
-                                        <input type="text" name="usuarioLogin" class="form-control" placeholder="Telefone ou Email" aria-describedby="basic-addon1" required>
+                                        <input type="text" name="usuarioLogin" class="form-control" placeholder="Telefone com DDD" aria-describedby="basic-addon1" required>
                                     </div>
                                 </div>
 
