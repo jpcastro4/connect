@@ -206,7 +206,7 @@
     
     var retirar = function(){
 
-        $("#rejeitar").on('click', function(e){
+        $(".rejeitar").on('click', function(e){
             e.preventDefault()
 
             var r = confirm('Tem certeza que deseja retirar o doador? (Essa ação é irreverssível. Ela retira a doação e bloqueia o doador.)')
@@ -259,7 +259,7 @@
 
     var aceitar = function(){
 
-        $("#aceitar").on('click', function(e){
+        $(".aceitar").on('click', function(e){
             e.preventDefault()
 
             var r = confirm('Tem certeza que deseja aceitar a doação?')

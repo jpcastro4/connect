@@ -97,7 +97,7 @@
                             <div class="card">
                                 <div class="card-block">
                                     <h5 class="card-title">Posicionar</h5>
-                                    <button class="btn btn-warning btn-large text-center" type="button" data-numdoacoes="1" id="posicionar">Aguarde liberação <i class="fa fa-spinner fa-spin"></i></button>
+                                    <button class="btn btn-warning btn-large text-center" type="button" data-numdoacoes="1" >Aguarde liberação  <i class="fa fa-spinner fa-spin pl-2"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -271,13 +271,13 @@
                                             </td>
                                             
                                             <td>
-                                                <button class="btn btn-small btn-success" id="aceitar" data-doacao="<?php echo $receb->doacaoID ?>" >Confirmar doação</button>
+                                                <button class="btn btn-small btn-success aceitar" data-doacao="<?php echo $receb->doacaoID ?>" >Confirmar doação</button>
                                                 <?php 
                                                 // if($receb->doacaoStatus == 1){
                                                 //     echo '';
                                                 // }
                                                 if( strtotime($receb->doacaoCronometro) - strtotime("now") < 0 AND $receb->doacaoStatus == 0 ){
-                                                    echo '<button class="btn btn-small btn-danger" id="rejeitar" data-doacao="'.$receb->doacaoID .'" >Retirar doador</button>';
+                                                    echo '<button class="btn btn-small btn-danger rejeitar" data-doacao="'.$receb->doacaoID .'" >Retirar doador</button>';
                                                 }                                                
                                                 ?>
                                             </td>
