@@ -122,12 +122,7 @@ class Usuario_model extends CI_Model{
                 // 'TopicArn' => '<string>',
             ];
 
-            //Inscreve o usuario no topico
-            $result = $client->subscribe(array(
-                'TopicArn' => 'arn:aws:sns:us-east-1:630580470294:connectmoney',
-                'Protocol' => 'sms',
-                'Endpoint' => (string) '+55'.$phone,
-            ));
+            $this->subsFone($phone);
         
             // $subarn = $result['SubscriptionArn']; //retorno da identificação do usuario na lista
             $client->publish($message);
@@ -155,8 +150,52 @@ class Usuario_model extends CI_Model{
         echo json_encode(array('result'=>'success','message'=>'Sucesso. Vamos proseguir','redirect'=>base_url("finaliza")));
     }
 
+    public function subsFone($fone){
+         try{
 
-    private function subsEmail($email){
+            $client = SnsClient::factory(array(
+            'region' => 'us-east-1',
+            'version' => 'latest',
+            'credentials' => array(
+                'key'    =>  $this->config->item('aws_key'),
+                'secret' => $this->config->item('aws_secret')
+                )
+            ));
+
+            //verificar se o telefone já foi desinscrito
+            // $check = $client->checkIfPhoneNumberIsOptedOut([
+            //     'phoneNumber' => (string) '+55'.$fone,
+            // ]);
+            
+            // echo dump($check ); 
+            // if($result['isOptedOut']){
+            //     $result = $client->unsubscribe(array(
+            //         'SubscriptionArn' => $subarn,
+            //     ));
+            // }else{
+
+                
+            // }
+            
+
+            //Inscreve o usuario no topico
+            $result = $client->subscribe(array(
+                'TopicArn' => 'arn:aws:sns:us-east-1:630580470294:connectmoney',
+                'Protocol' => 'sms',
+                'Endpoint' => (string) '+55'.$fone,
+            ));
+            
+            // $subarn = $result['SubscriptionArn']; //retorno da identificação do usuario na lista
+            echo $result['SubscriptionArn'];
+            return true;
+
+        }catch(AwsException $e){
+
+            return false;
+        }
+    }
+
+    public function subsEmail($email){
          try{
 
             $client = SnsClient::factory(array(
@@ -176,6 +215,7 @@ class Usuario_model extends CI_Model{
             ));
         
             // $subarn = $result['SubscriptionArn']; //retorno da identificação do usuario na lista
+            dump($result);// $result['SubscriptionArn'];
             return true;
 
         }catch(AwsException $e){

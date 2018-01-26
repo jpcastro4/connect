@@ -103,7 +103,7 @@
                         </div>
                         <div class="col-12 col-md-4 col-lg-3">
                             <div class="card">
-                                <div class="card-block" style="height:110px;max-height:110px">
+                                <div class="card-block" style="height:110px">
                                     <!-- <h5 class="card-title">Avisos</h5> -->
                                     <!-- <p>Dica: cada novo posicionamento te dá direito a mais 3 doações.</p> -->
                                     <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -122,7 +122,7 @@
                     </div>
 
                     <div class="row py-3">
-                        <div class="col-12 mx-auto" style="height:110px" >
+                        <div class="col-12 mx-auto" style="min-height:110px;max-height:350px" >
                         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                             <!-- NOWX -->
                             <ins class="adsbygoogle"

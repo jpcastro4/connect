@@ -108,6 +108,55 @@ class Form extends CI_Controller {
 
         $this->admin->AtualizarConfiguracoes();
     }
+
+    public function telefone(){
+        echo 'joao';
+    }
+
+    public function contatos(){
+
+       //set_time_limit(60000);
+
+       $return = $this->db->get('precadastro')->result();
+
+       foreach($return as $i){
+
+            $seg = rand(2,15);
+            sleep($seg);
+            $this->usuario->subsFone($i->telefone);
+
+            // $telefone = preg_replace("/\(|\)|\-/", "", $i->telefone);
+            // $this->db->where('id',$i->id);
+            // $this->db->update('precadastro', array('telefone'=>$telefone ));
+
+            // $digito = str_split($telefone);
+
+            // if($digito[0]==0){
+            //     $telefone = substr($telefone,1,strlen($telefone));
+            //     // $this->db->where('id',$i->id);
+            //     // $true = $this->db->update('precadastro', array('telefone'=>$telefone ));
+            //     echo $i->nome.' - '.$i->telefone.' - '. $telefone .'</br></br>';
+            // }
+            // if(strlen($telefone) < 10 ){
+
+            //     // $e = str_split($telefone);
+            //     // if($e[2] < 7 ){
+                    
+            //     //     $ntelefone = $e[0].$e[1].'$'.$e[2].$e[3].$e[4].$e[5].$e[6].$e[7].$e[8].$e[9];
+            //         // $this->db->where('id',$i->id);
+            //         // $true = $this->db->delete('precadastro');
+            //         echo $i->nome.' - '.$i->telefone.' - </br></br>';
+            //     // }
+                
+            // }
+       }
+
+        
+    
+       //dump($return);
+       //echo json_encode($return);
+
+    }
  
  
 }

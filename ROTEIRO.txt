@@ -1,33 +1,33 @@
 
-Conheça a Connect Money
+Conheï¿½a a Connect Money
 _Uma comunidade de ajuda inteligente_ 
 
-Que tal dobrar sua doação em 24h?
+Que tal dobrar sua doaï¿½ï¿½o em 24h?
 
 Melhor! Que tal escolher quanto quer receber?
 
 Como... Vou te mostrar!
 
-Abra um posicionamento e faça uma doação nova valor indicado pelo sistema para um dos membros.
+Abra um posicionamento e faï¿½a uma doaï¿½ï¿½o nova valor indicado pelo sistema para um dos membros.
 
-A partir daí você estará apto a receber 3 doações do mesmo valor doado.
+A partir daï¿½ vocï¿½ estarï¿½ apto a receber 3 doaï¿½ï¿½es do mesmo valor doado.
 
-É fantástico não é !?
+ï¿½ fantï¿½stico nï¿½o ï¿½ !?
 
-E tem mais... Na Connect Money as doações são diretas. Não existe acúmulo de valores para repasse. 
+E tem mais... Na Connect Money as doaï¿½ï¿½es sï¿½o diretas. Nï¿½o existe acï¿½mulo de valores para repasse. 
 
-Recebeu? É seu.
+Recebeu? ï¿½ seu.
 
-E melhor! Os *posicionamentos são livres*. Você pode se posicionar quantas vezes quiser.
+E melhor! Os *posicionamentos sï¿½o livres*. Vocï¿½ pode se posicionar quantas vezes quiser.
 
 
-E você pode ganhar muito mais.
+E vocï¿½ pode ganhar muito mais.
 
-Cada movimentação feita na comunidade você sobe de nível e abre mais oportunidades de ganhar mais doações.
+Cada movimentaï¿½ï¿½o feita na comunidade vocï¿½ sobe de nï¿½vel e abre mais oportunidades de ganhar mais doaï¿½ï¿½es.
 
 Gostou? 
 
-Não perca tempo. 
+Nï¿½o perca tempo. 
 
 Cadastre-se na Connect Money. 
 
@@ -35,3 +35,5 @@ www.connectmoney.club
 
 Connect Money 
 _Uma comunidade de ajuda inteligente_ 
+
+SELECT COUNT(*) AS contador, telefone FROM precadastro GROUP BY email HAVING COUNT(*) > 1 ORDER BY id

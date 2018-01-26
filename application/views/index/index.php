@@ -195,6 +195,22 @@
 	</div> <!-- cd-faq-items -->
 	<a href="#0" class="cd-close-panel">Close</a>
 </section> <!-- cd-faq -->
+<section>
+	<div class="container">
+		<div class="col-4 mx-auto my4" style="max-height:300px">
+                  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                    <!-- NOWX -->
+                    <ins class="adsbygoogle"
+                        style="display:block"
+                        data-ad-client="ca-pub-3215674587886121"
+                        data-ad-slot="7539926294"
+                        data-ad-format="auto"></ins>
+                    <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+        </div>
+	</div>
+</section>
 <script src="<?php echo base_url('assets/index/') ?>js/jquery-2.1.1.js"></script>
 <script src="<?php echo base_url('assets/index/') ?>js/jquery.mobile.custom.min.js"></script>
 <script src="<?php echo base_url('assets/index/') ?>js/main.js"></script> <!-- Resource jQuery -->
